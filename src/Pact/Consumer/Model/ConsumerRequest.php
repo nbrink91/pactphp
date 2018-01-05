@@ -2,6 +2,11 @@
 
 namespace Pact\Consumer\Model;
 
+/**
+ * Request initiated by the consumer.
+ * Class ConsumerRequest
+ * @package Pact\Consumer\Model
+ */
 class ConsumerRequest
 {
     /**

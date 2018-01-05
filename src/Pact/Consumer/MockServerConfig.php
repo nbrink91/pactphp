@@ -1,6 +1,8 @@
 <?php
 
 namespace Pact\Consumer;
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Configuration defining the default Pact Ruby Standalone server.
@@ -20,21 +22,23 @@ class MockServerConfig
     private $port;
 
     /**
+     * @var bool
+     */
+    private $secure;
+
+    public function __construct(string $host, int $port, bool $secure = false)
+    {
+        $this->host = $host;
+        $this->port = $port;
+        $this->secure = $secure;
+    }
+
+    /**
      * @return string
      */
     public function getHost(): string
     {
         return $this->host;
-    }
-
-    /**
-     * @param string $host
-     * @return MockServerConfig
-     */
-    public function setHost(string $host): MockServerConfig
-    {
-        $this->host = $host;
-        return $this;
     }
 
     /**
@@ -46,12 +50,20 @@ class MockServerConfig
     }
 
     /**
-     * @param int $port
-     * @return MockServerConfig
+     * @return bool
      */
-    public function setPort(int $port): MockServerConfig
+    public function isSecure(): bool
     {
-        $this->port = $port;
-        return $this;
+        return $this->secure;
+    }
+
+    /**
+     * @return UriInterface
+     */
+    public function getBaseUri(): UriInterface
+    {
+        $protocol = $this->secure ? 'https' : 'http';
+
+        return new Uri("{$protocol}://{$this->getHost()}:{$this->getPort()}");
     }
 }

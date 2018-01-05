@@ -2,7 +2,11 @@
 
 namespace Pact\Consumer\Model;
 
-
+/**
+ * Response expectation that would be in response to a Consumer request from the Provider.
+ * Class ProviderResponse
+ * @package Pact\Consumer\Model
+ */
 class ProviderResponse
 {
     /**

@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class InteractionBuilderTest extends TestCase
 {
-    public function testBuildJson()
+    public function testSend()
     {
         $request = new ConsumerRequest();
         $request
@@ -24,14 +24,15 @@ class InteractionBuilderTest extends TestCase
             ])
             ->addHeader('Content-Type', 'application/json');
 
-        $builder = new InteractionBuilder();
-        $json = $builder
+        $config = new MockServerConfig('localhost', 7200);
+        $builder = new InteractionBuilder($config);
+        $result = $builder
             ->given("A test request.")
             ->uponReceiving("A test response.")
             ->with($request)
             ->willRespondWith($response)
-            ->buildJson();
+            ->send();
 
-        $this->assertTrue(false);
+        $this->assertEquals('Registered interactions', $result);
     }
 }
