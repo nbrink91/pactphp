@@ -1,6 +1,7 @@
 <?php
 
 namespace Pact\Consumer;
+
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\UriInterface;
 
