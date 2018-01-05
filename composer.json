@@ -1,0 +1,29 @@
+{
+    "name": "nicholasbrink/pact",
+    "description": "PACT library for PHP.",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Nicholas Brink",
+            "email": "nbrink7@gmail.com"
+        }
+    ],
+    "require": {
+        "psr/log": "^1.0",
+        "guzzlehttp/guzzle": "^6.3",
+        "jms/serializer": "^1.10"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pact\\": "src/Pact"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Pact\\": "tests/Pact"
+        }
+    }
+}
