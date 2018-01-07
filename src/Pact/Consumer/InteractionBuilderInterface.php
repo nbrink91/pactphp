@@ -32,7 +32,7 @@ interface InteractionBuilderInterface
     /**
      * Make the http request to the Mock Service to register the interaction.
      * @param ProviderResponse $response Mock of response received.
-     * @return string Response text from the Ruby Mock Server.
+     * @return bool Returns true on success.
      */
-    public function willRespondWith(ProviderResponse $response): string;
+    public function willRespondWith(ProviderResponse $response): bool;
 }
