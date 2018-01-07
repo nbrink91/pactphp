@@ -88,7 +88,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     /**
      * @inheritdoc
      */
-    public function createInteraction(Interaction $interaction): bool
+    public function registerInteraction(Interaction $interaction): bool
     {
         $uri = $this->config->getBaseUri()->withPath('/interactions');
 

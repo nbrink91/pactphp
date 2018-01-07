@@ -27,7 +27,7 @@ interface MockServerHttpServiceInterface
      * @param Interaction $interaction
      * @return bool
      */
-    public function createInteraction(Interaction $interaction): bool;
+    public function registerInteraction(Interaction $interaction): bool;
 
     /**
      * Verify that all interactions have taken place.

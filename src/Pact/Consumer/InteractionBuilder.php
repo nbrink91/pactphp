@@ -73,6 +73,6 @@ class InteractionBuilder implements InteractionBuilderInterface
     private function send(): bool
     {
         $service = new MockServerHttpService(new GuzzleClient(), $this->config);
-        return $service->createInteraction($this->interaction);
+        return $service->registerInteraction($this->interaction);
     }
 }

@@ -3,6 +3,7 @@
 namespace Pact\Consumer\Service;
 
 use Pact\Consumer\Http\GuzzleClient;
+use Pact\Consumer\MockServer;
 use Pact\Consumer\MockServerConfig;
 use Pact\Consumer\Model\ConsumerRequest;
 use Pact\Consumer\Model\Interaction;
@@ -14,10 +15,20 @@ class MockServerHttpServiceTest extends TestCase
     /** @var MockServerHttpServiceInterface */
     private $service;
 
+    /** @var MockServer */
+    private $mockServer;
+
     protected function setUp()
     {
-        $config = new MockServerConfig('localhost', '7200');
+        $config = new MockServerConfig('localhost', '7200', 'someConsumer', 'someProvider', sys_get_temp_dir());
+        $this->mockServer = new MockServer($config);
+        $this->mockServer->start();
         $this->service = new MockServerHttpService(new GuzzleClient(), $config);
+    }
+
+    protected function tearDown()
+    {
+        $this->mockServer->stop();
     }
 
     public function testHealthcheck()
@@ -26,7 +37,7 @@ class MockServerHttpServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testCreateInteraction()
+    public function testRegisterInteraction()
     {
         $request = new ConsumerRequest();
         $request
@@ -41,7 +52,7 @@ class MockServerHttpServiceTest extends TestCase
             ->setRequest($request)
             ->setResponse($response);
 
-        $result = $this->service->createInteraction($interaction);
+        $result = $this->service->registerInteraction($interaction);
 
         $this->assertTrue($result);
     }

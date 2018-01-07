@@ -2,13 +2,36 @@
 
 namespace Pact\Consumer;
 
+use Pact\Consumer\Http\GuzzleClient;
 use Pact\Consumer\Model\ConsumerRequest;
 use Pact\Consumer\Model\ProviderResponse;
+use Pact\Consumer\Service\MockServerHttpService;
+use Pact\Consumer\Service\MockServerHttpServiceInterface;
 use PHPUnit\Framework\TestCase;
 
 class InteractionBuilderTest extends TestCase
 {
-    public function testSend()
+    /** @var MockServerHttpServiceInterface */
+    private $service;
+
+    /** @var MockServer */
+    private $mockServer;
+
+    protected function setUp()
+
+    {
+        $config = new MockServerConfig('localhost', '7200', 'someConsumer', 'someProvider', sys_get_temp_dir());
+        $this->mockServer = new MockServer($config);
+        $this->mockServer->start();
+        $this->service = new MockServerHttpService(new GuzzleClient(), $config);
+    }
+
+    protected function tearDown()
+    {
+        $this->mockServer->stop();
+    }
+
+    public function testWillRespondWith()
     {
         $request = new ConsumerRequest();
         $request
@@ -24,7 +47,7 @@ class InteractionBuilderTest extends TestCase
             ])
             ->addHeader('Content-Type', 'application/json');
 
-        $config = new MockServerConfig('localhost', 7200);
+        $config = new MockServerConfig('localhost', 7200, 'someConsumer', 'someProvider', sys_get_temp_dir());
         $builder = new InteractionBuilder($config);
         $result = $builder
             ->given("A test request.")
