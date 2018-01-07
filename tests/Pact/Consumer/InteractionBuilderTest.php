@@ -7,6 +7,7 @@ use Pact\Consumer\Model\ConsumerRequest;
 use Pact\Consumer\Model\ProviderResponse;
 use Pact\Consumer\Service\MockServerHttpService;
 use Pact\Consumer\Service\MockServerHttpServiceInterface;
+use Pact\Consumer\Service\RubyStandaloneBinaryManager;
 use PHPUnit\Framework\TestCase;
 
 class InteractionBuilderTest extends TestCase
@@ -18,10 +19,10 @@ class InteractionBuilderTest extends TestCase
     private $mockServer;
 
     protected function setUp()
-
     {
         $config = new MockServerConfig('localhost', '7200', 'someConsumer', 'someProvider', sys_get_temp_dir());
-        $this->mockServer = new MockServer($config);
+        $binaryManager = new RubyStandaloneBinaryManager(sys_get_temp_dir());
+        $this->mockServer = new MockServer($config, $binaryManager);
         $this->mockServer->start();
         $this->service = new MockServerHttpService(new GuzzleClient(), $config);
     }

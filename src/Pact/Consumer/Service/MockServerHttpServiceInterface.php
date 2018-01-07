@@ -14,7 +14,7 @@ interface MockServerHttpServiceInterface
      * Verify that the Ruby Pact Mock Server is running.
      * @return bool
      */
-    public function healthcheck(): bool;
+    public function healthCheck(): bool;
 
     /**
      * Delete all interactions.

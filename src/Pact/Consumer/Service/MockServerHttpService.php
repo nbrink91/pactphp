@@ -47,7 +47,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     /**
      * @inheritdoc
      */
-    public function healthcheck(): bool
+    public function healthCheck(): bool
     {
         $uri = $this->config->getBaseUri()->withPath('/');
         $response = $this->client->get($uri, [
@@ -58,7 +58,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
         ]);
 
         if ($response->getStatusCode() !== 200) {
-            return false;
+            throw new \Exception('Failed to receive a successful response from the Mock Server.');
         }
 
         return true;

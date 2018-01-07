@@ -20,8 +20,9 @@ class MockServerHttpServiceTest extends TestCase
 
     protected function setUp()
     {
+        $binaryManager = new RubyStandaloneBinaryManager(sys_get_temp_dir());
         $config = new MockServerConfig('localhost', '7200', 'someConsumer', 'someProvider', sys_get_temp_dir());
-        $this->mockServer = new MockServer($config);
+        $this->mockServer = new MockServer($config, $binaryManager);
         $this->mockServer->start();
         $this->service = new MockServerHttpService(new GuzzleClient(), $config);
     }
@@ -31,9 +32,9 @@ class MockServerHttpServiceTest extends TestCase
         $this->mockServer->stop();
     }
 
-    public function testHealthcheck()
+    public function testHealthCheck()
     {
-        $result = $this->service->healthcheck();
+        $result = $this->service->healthCheck();
         $this->assertTrue($result);
     }
 
