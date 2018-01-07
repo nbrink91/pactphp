@@ -30,13 +30,8 @@ class MockServer
     {
         $results = [];
 
-        if ($this->config->getConsumer() !== null) {
-            $results['consumer'] = $this->config->getConsumer();
-        }
-
-        if ($this->config->getProvider() !== null) {
-            $results['provider'] = $this->config->getProvider();
-        }
+        $results['consumer'] = $this->config->getConsumer();
+        $results['provider'] = $this->config->getProvider();
 
         if ($this->config->getHost() !== null) {
             $results['host'] = $this->config->getHost();
@@ -124,10 +119,10 @@ class MockServer
     {
         $result = $this->process->stop();
 
-        if ($result === false) {
+        if ($result !== 0) {
             throw new ProcessFailedException($this->process);
         }
 
-        return $result;
+        return true;
     }
 }
