@@ -30,8 +30,7 @@ class InteractionBuilderTest extends TestCase
             ->given("A test request.")
             ->uponReceiving("A test response.")
             ->with($request)
-            ->willRespondWith($response)
-            ->send();
+            ->willRespondWith($response);
 
         $this->assertEquals('Registered interactions', $result);
     }

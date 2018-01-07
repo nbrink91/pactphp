@@ -45,9 +45,50 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function createInteraction(Interaction $interaction): string
+    public function healthcheck(): bool
+    {
+        $uri = $this->config->getBaseUri()->withPath('/');
+        $response = $this->client->get($uri, [
+            'headers' => [
+                "Content-Type" => "application/json",
+                "X-Pact-Mock-Service" => true
+            ]
+        ]);
+
+        if ($response->getStatusCode() !== 200) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteAllInteractions(): bool
+    {
+        $uri = $this->config->getBaseUri()->withPath('/interactions');
+
+        $response = $this->client->delete($uri, [
+            'headers' => [
+                "Content-Type" => "application/json",
+                "X-Pact-Mock-Service" => true
+            ]
+        ]);
+
+        if ($response->getStatusCode() !== 200) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createInteraction(Interaction $interaction): bool
     {
         $uri = $this->config->getBaseUri()->withPath('/interactions');
 
@@ -61,6 +102,47 @@ class MockServerHttpService implements MockServerHttpServiceInterface
             'body' => $body
         ]);
 
-        return trim(preg_replace('/\s\s+/', '', $response->getBody()->getContents()));
+        if ($response->getStatusCode() !== 200) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function verifyInteractions(): bool
+    {
+        $uri = $this->config->getBaseUri()->withPath('/interactions/verification');
+
+        $response = $this->client->get($uri, [
+            'headers' => [
+                "Content-Type" => "application/json",
+                "X-Pact-Mock-Service" => true
+            ]
+        ]);
+
+        if ($response->getStatusCode() !== 200) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPactJson(): string
+    {
+        $uri = $this->config->getBaseUri()->withPath('/pact');
+        $response = $this->client->post($uri, [
+            'headers' => [
+                "Content-Type" => "application/json",
+                "X-Pact-Mock-Service" => true
+            ]
+        ]);
+
+        return json_encode(json_decode($response->getBody()->getContents()));
     }
 }

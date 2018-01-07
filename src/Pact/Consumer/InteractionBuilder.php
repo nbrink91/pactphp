@@ -61,16 +61,16 @@ class InteractionBuilder implements InteractionBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function willRespondWith(ProviderResponse $response): InteractionBuilder
+    public function willRespondWith(ProviderResponse $response): string
     {
         $this->interaction->setResponse($response);
-        return $this;
+        return $this->send();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function send(): string
+    private function send(): string
     {
         $service = new MockServerHttpService(new GuzzleClient(), $this->config);
         return $service->createInteraction($this->interaction);

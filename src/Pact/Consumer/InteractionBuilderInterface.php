@@ -30,14 +30,9 @@ interface InteractionBuilderInterface
     public function with(ConsumerRequest $request): InteractionBuilder;
 
     /**
-     * @param ProviderResponse $response Mock of response received.
-     * @return InteractionBuilder
-     */
-    public function willRespondWith(ProviderResponse $response): InteractionBuilder;
-
-    /**
      * Make the http request to the Mock Service to register the interaction.
-     * @return string
+     * @param ProviderResponse $response Mock of response received.
+     * @return string Response text from the Ruby Mock Server.
      */
-    public function send(): string;
+    public function willRespondWith(ProviderResponse $response): string;
 }
