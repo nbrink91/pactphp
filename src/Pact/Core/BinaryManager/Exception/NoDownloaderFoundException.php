@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of Pact for PHP.
+ * (c) Mattersight Corporation
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Pact\Core\BinaryManager\Exception;
 
 use Exception;
@@ -7,7 +14,6 @@ use Exception;
 /**
  * Unable to find a downloader to get the binaries.
  * Class NoDownloaderFoundException
- * @package Pact\Core\BinaryManager\Exception
  */
 class NoDownloaderFoundException extends Exception
 {

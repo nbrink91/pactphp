@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of Pact for PHP.
+ * (c) Mattersight Corporation
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Pact\Core\Http;
 
 use GuzzleHttp\Client;
@@ -9,7 +16,6 @@ use Psr\Http\Message\UriInterface;
 /**
  * Guzzle Client Interface Wrapper
  * Class GuzzleClient
- * @package Pact\Core\Http
  */
 class GuzzleClient implements ClientInterface
 {

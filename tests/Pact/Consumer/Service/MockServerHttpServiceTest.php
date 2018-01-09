@@ -1,13 +1,20 @@
 <?php
 
+/*
+ * This file is part of Pact for PHP.
+ * (c) Mattersight Corporation
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Pact\Consumer\Service;
 
 use GuzzleHttp\Exception\ServerException;
+use Pact\Consumer\MockServer;
 use Pact\Consumer\MockServerConfigInterface;
 use Pact\Consumer\MockServerEnvConfig;
 use Pact\Core\BinaryManager\BinaryManager;
 use Pact\Core\Http\GuzzleClient;
-use Pact\Consumer\MockServer;
 use Pact\Core\Model\ConsumerRequest;
 use Pact\Core\Model\Interaction;
 use Pact\Core\Model\ProviderResponse;
@@ -24,31 +31,31 @@ class MockServerHttpServiceTest extends TestCase
     /** @var MockServerConfigInterface */
     private $config;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->config = new MockServerEnvConfig();
+        $this->config     = new MockServerEnvConfig();
         $this->mockServer = new MockServer($this->config, new BinaryManager());
         $this->mockServer->start();
         $this->service = new MockServerHttpService(new GuzzleClient(), $this->config);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->mockServer->stop();
     }
 
-    public function testHealthCheck()
+    public function testHealthCheck(): void
     {
         $result = $this->service->healthCheck();
         $this->assertTrue($result);
     }
 
-    public function testRegisterInteraction()
+    public function testRegisterInteraction(): void
     {
         $request = new ConsumerRequest();
         $request
             ->setPath('/example')
-            ->setMethod("GET");
+            ->setMethod('GET');
         $response = new ProviderResponse();
 
         $interaction = new Interaction();
@@ -63,24 +70,24 @@ class MockServerHttpServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testDeleteAllInteractions()
+    public function testDeleteAllInteractions(): void
     {
         $result = $this->service->deleteAllInteractions();
         $this->assertTrue($result);
     }
 
-    public function testVerifyInteractions()
+    public function testVerifyInteractions(): void
     {
         $result = $this->service->verifyInteractions();
         $this->assertTrue($result);
     }
 
-    public function testVerifyInteractionsFailure()
+    public function testVerifyInteractionsFailure(): void
     {
         $request = new ConsumerRequest();
         $request
             ->setPath('/example')
-            ->setMethod("GET");
+            ->setMethod('GET');
 
         $interaction = new Interaction();
         $interaction
@@ -93,25 +100,25 @@ class MockServerHttpServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testGetPactJson()
+    public function testGetPactJson(): void
     {
         $result = $this->service->getPactJson();
         $this->assertEquals('{"consumer":{"name":"someConsumer"},"provider":{"name":"someProvider"},"interactions":[],"metadata":{"pactSpecification":{"version":"2.0.0"}}}', $result);
     }
 
-    public function testFullGetInteraction()
+    public function testFullGetInteraction(): void
     {
         $request = new ConsumerRequest();
         $request
             ->setPath('/example')
-            ->setMethod("GET")
+            ->setMethod('GET')
             ->setQuery('enabled=true')
             ->addQueryParameter('order', 'asc')
             ->addQueryParameter('value', '12')
             ->addHeader('Content-Type', 'application/json');
 
-        $expectedResponseBody = json_encode([
-            "message" => "Hello, world!"
+        $expectedResponseBody = \json_encode([
+            'message' => 'Hello, world!'
         ]);
         $response = new ProviderResponse();
         $response
@@ -130,8 +137,8 @@ class MockServerHttpServiceTest extends TestCase
 
         $this->assertTrue($result);
 
-        $client = new GuzzleClient();
-        $uri = $this->config->getBaseUri()->withPath('/example')->withQuery('enabled=true&order=asc&value=12');
+        $client   = new GuzzleClient();
+        $uri      = $this->config->getBaseUri()->withPath('/example')->withQuery('enabled=true&order=asc&value=12');
         $response = $client->get($uri, [
             'headers' => [
                 'Content-Type' => 'application/json'

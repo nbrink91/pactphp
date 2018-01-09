@@ -1,11 +1,17 @@
 <?php
 
+/*
+ * This file is part of Pact for PHP.
+ * (c) Mattersight Corporation
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Pact\Core\Model;
 
 /**
  * Response expectation that would be in response to a Consumer request from the Provider.
  * Class ProviderResponse
- * @package Pact\Core\Model
  */
 class ProviderResponse
 {
@@ -34,11 +40,13 @@ class ProviderResponse
 
     /**
      * @param int $status
+     *
      * @return ProviderResponse
      */
-    public function setStatus(int $status): ProviderResponse
+    public function setStatus(int $status): self
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -52,22 +60,26 @@ class ProviderResponse
 
     /**
      * @param string[] $headers
+     *
      * @return ProviderResponse
      */
-    public function setHeaders(array $headers): ProviderResponse
+    public function setHeaders(array $headers): self
     {
         $this->headers = $headers;
+
         return $this;
     }
 
     /**
      * @param string $header
      * @param string $value
+     *
      * @return ProviderResponse
      */
-    public function addHeader(string $header, string $value): ProviderResponse
+    public function addHeader(string $header, string $value): self
     {
         $this->headers[$header] = $value;
+
         return $this;
     }
 
@@ -81,11 +93,13 @@ class ProviderResponse
 
     /**
      * @param mixed $body
+     *
      * @return ProviderResponse
      */
-    public function setBody($body): ProviderResponse
+    public function setBody($body): self
     {
         $this->body = $body;
+
         return $this;
     }
 }

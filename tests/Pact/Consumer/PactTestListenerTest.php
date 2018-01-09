@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of Pact for PHP.
+ * (c) Mattersight Corporation
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Pact\Consumer;
 
 use GuzzleHttp\Exception\ConnectException;
@@ -11,19 +18,19 @@ use PHPUnit\Framework\TestSuite;
 
 class PactTestListenerTest extends TestCase
 {
-    public function testStartAndEndTestSuite()
+    public function testStartAndEndTestSuite(): void
     {
-        $name = 'FakeTestSuite';
+        $name     = 'FakeTestSuite';
         $listener = new PactTestListener([$name]);
 
         $suite = Mockery::mock(TestSuite::class);
         $suite->shouldReceive('getName')->once()->andReturn($name);
 
         // Verify that the start, starts the server as expected.
-        /** @var TestSuite $suite */
+        /* @var TestSuite $suite */
         $listener->startTestSuite($suite);
         $service = new MockServerHttpService(new GuzzleClient(), new MockServerEnvConfig());
-        $status = $service->healthCheck();
+        $status  = $service->healthCheck();
         $this->assertTrue($status);
 
         // Verify that the end stop the server as expected.

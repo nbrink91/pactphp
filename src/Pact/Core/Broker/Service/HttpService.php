@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of Pact for PHP.
+ * (c) Mattersight Corporation
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Pact\Core\Broker\Service;
 
 use Exception;
@@ -20,7 +27,7 @@ class HttpService implements HttpServiceInterface
     public function __construct(ClientInterface $httpClient, UriInterface $baseUri)
     {
         $this->httpClient = $httpClient;
-        $this->baseUri = $baseUri;
+        $this->baseUri    = $baseUri;
     }
 
     /**
@@ -28,7 +35,7 @@ class HttpService implements HttpServiceInterface
      */
     public function publishJson(string $json, string $version): bool
     {
-        $array = json_decode($json);
+        $array    = \json_decode($json);
         $consumer = $array['consumer'];
         $provider = $array['provider'];
 
@@ -45,7 +52,7 @@ class HttpService implements HttpServiceInterface
         ]);
 
         if ($response->getStatusCode() !== 200) {
-            throw new Exception("Unable to push Pact JSON to Pact Broker.");
+            throw new Exception('Unable to push Pact JSON to Pact Broker.');
         }
 
         return true;

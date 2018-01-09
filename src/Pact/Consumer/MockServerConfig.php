@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of Pact for PHP.
+ * (c) Mattersight Corporation
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Pact\Consumer;
 
 use GuzzleHttp\Psr7\Uri;
@@ -8,18 +15,19 @@ use Psr\Http\Message\UriInterface;
 /**
  * Configuration defining the default Pact Ruby Standalone server.
  * Class MockServerConfig
- * @package Pact\Consumer
  */
 class MockServerConfig implements MockServerConfigInterface
 {
     /**
      * Host on which to bind the service
+     *
      * @var string
      */
     private $host = 'localhost';
 
     /**
      * Port on which to run the service
+     *
      * @var int
      */
     private $port = 7200;
@@ -31,18 +39,21 @@ class MockServerConfig implements MockServerConfigInterface
 
     /**
      * Consumer name
+     *
      * @var string
      */
     private $consumer;
 
     /**
      * Provider name
+     *
      * @var string
      */
     private $provider;
 
     /**
      * Directory to which the pacts will be written
+     *
      * @var string
      */
     private $pactDir;
@@ -52,26 +63,29 @@ class MockServerConfig implements MockServerConfigInterface
      * instances in parallel for the same consumer/provider pair. Ensure the
      * pact file is deleted before running tests when using this option so that
      * interactions deleted from the code are not maintained in the file.
+     *
      * @var string
      */
     private $pactFileWriteMode = 'overwrite';
 
     /**
      * The pact specification version to use when writing the pact. Note that only versions 1 and 2 are currently supported.
+     *
      * @var float
      */
     private $pactSpecificationVersion;
 
     /**
      * File to which to log output
+     *
      * @var string
      */
     private $log;
 
     public function __construct(string $host, int $port, string $consumer, string $provider)
     {
-        $this->host = $host;
-        $this->port = $port;
+        $this->host     = $host;
+        $this->port     = $port;
         $this->consumer = $consumer;
         $this->provider = $provider;
     }
@@ -132,7 +146,7 @@ class MockServerConfig implements MockServerConfigInterface
     public function getPactDir(): ?string
     {
         if ($this->pactDir === null) {
-            return sys_get_temp_dir();
+            return \sys_get_temp_dir();
         }
 
         return $this->pactDir;
@@ -140,11 +154,13 @@ class MockServerConfig implements MockServerConfigInterface
 
     /**
      * @param string $pactDir
+     *
      * @return MockServerConfigInterface
      */
     public function setPactDir(string $pactDir): MockServerConfigInterface
     {
         $this->pactDir = $pactDir;
+
         return $this;
     }
 
@@ -158,18 +174,21 @@ class MockServerConfig implements MockServerConfigInterface
 
     /**
      * @param string $pactFileWriteMode
+     *
      * @return MockServerConfigInterface
      */
     public function setPactFileWriteMode(string $pactFileWriteMode): MockServerConfigInterface
     {
         $options = ['overwrite', 'merge'];
 
-        if (!in_array($pactFileWriteMode, $options)) {
-            $implodedOptions = implode(',', $options);
+        if (!\in_array($pactFileWriteMode, $options)) {
+            $implodedOptions = \implode(',', $options);
+
             throw new \InvalidArgumentException("Invalid Pact File Write Mode, value must be one of the following: {$implodedOptions}");
         }
 
         $this->pactFileWriteMode = $pactFileWriteMode;
+
         return $this;
     }
 
@@ -183,11 +202,13 @@ class MockServerConfig implements MockServerConfigInterface
 
     /**
      * @param float $pactSpecificationVersion
+     *
      * @return MockServerConfigInterface
      */
     public function setPactSpecificationVersion(float $pactSpecificationVersion): MockServerConfigInterface
     {
         $this->pactSpecificationVersion = $pactSpecificationVersion;
+
         return $this;
     }
 
@@ -201,11 +222,13 @@ class MockServerConfig implements MockServerConfigInterface
 
     /**
      * @param string $log
+     *
      * @return MockServerConfigInterface
      */
     public function setLog(string $log): MockServerConfigInterface
     {
         $this->log = $log;
+
         return $this;
     }
 }

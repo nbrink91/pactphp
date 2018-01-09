@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of Pact for PHP.
+ * (c) Mattersight Corporation
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Pact\Consumer;
 
 use Psr\Http\Message\UriInterface;
@@ -43,9 +50,10 @@ interface MockServerConfigInterface
 
     /**
      * @param string $pactDir
+     *
      * @return MockServerConfigInterface
      */
-    public function setPactDir(string $pactDir): MockServerConfigInterface;
+    public function setPactDir(string $pactDir): self;
 
     /**
      * @return string
@@ -54,9 +62,10 @@ interface MockServerConfigInterface
 
     /**
      * @param string $pactFileWriteMode
+     *
      * @return MockServerConfigInterface
      */
-    public function setPactFileWriteMode(string $pactFileWriteMode): MockServerConfigInterface;
+    public function setPactFileWriteMode(string $pactFileWriteMode): self;
 
     /**
      * @return float
@@ -65,9 +74,10 @@ interface MockServerConfigInterface
 
     /**
      * @param float $pactSpecificationVersion
+     *
      * @return MockServerConfigInterface
      */
-    public function setPactSpecificationVersion(float $pactSpecificationVersion): MockServerConfigInterface;
+    public function setPactSpecificationVersion(float $pactSpecificationVersion): self;
 
     /**
      * @return string
@@ -76,7 +86,8 @@ interface MockServerConfigInterface
 
     /**
      * @param string $log
+     *
      * @return MockServerConfigInterface
      */
-    public function setLog(string $log): MockServerConfigInterface;
+    public function setLog(string $log): self;
 }

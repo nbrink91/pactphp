@@ -1,21 +1,28 @@
 <?php
 
+/*
+ * This file is part of Pact for PHP.
+ * (c) Mattersight Corporation
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Pact\Consumer\Service;
 
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
+use Pact\Consumer\MockServerConfig;
 use Pact\Consumer\MockServerConfigInterface;
 use Pact\Core\Exception\ConnectionException;
 use Pact\Core\Http\ClientInterface;
-use Pact\Consumer\MockServerConfig;
 use Pact\Core\Model\Interaction;
 
 /**
  * Http Service that interacts with the Ruby Standalone Mock Server
+ *
  * @see https://github.com/pact-foundation/pact-mock_service
  * Class MockServerHttpService
- * @package Pact\Consumer\Service
  */
 class MockServerHttpService implements MockServerHttpServiceInterface
 {
@@ -34,7 +41,8 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
     /**
      * MockServerHttpService constructor.
-     * @param ClientInterface $client
+     *
+     * @param ClientInterface           $client
      * @param MockServerConfigInterface $config
      */
     public function __construct(ClientInterface $client, MockServerConfigInterface $config)
@@ -51,11 +59,11 @@ class MockServerHttpService implements MockServerHttpServiceInterface
      */
     public function healthCheck(): bool
     {
-        $uri = $this->config->getBaseUri()->withPath('/');
+        $uri      = $this->config->getBaseUri()->withPath('/');
         $response = $this->client->get($uri, [
             'headers' => [
-                "Content-Type" => "application/json",
-                "X-Pact-Mock-Service" => true
+                'Content-Type'        => 'application/json',
+                'X-Pact-Mock-Service' => true
             ]
         ]);
 
@@ -75,8 +83,8 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
         $response = $this->client->delete($uri, [
             'headers' => [
-                "Content-Type" => "application/json",
-                "X-Pact-Mock-Service" => true
+                'Content-Type'        => 'application/json',
+                'X-Pact-Mock-Service' => true
             ]
         ]);
 
@@ -98,8 +106,8 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
         $this->client->post($uri, [
             'headers' => [
-                "Content-Type" => "application/json",
-                "X-Pact-Mock-Service" => true
+                'Content-Type'        => 'application/json',
+                'X-Pact-Mock-Service' => true
             ],
             'body' => $body
         ]);
@@ -116,8 +124,8 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
         $this->client->get($uri, [
             'headers' => [
-                "Content-Type" => "application/json",
-                "X-Pact-Mock-Service" => true
+                'Content-Type'        => 'application/json',
+                'X-Pact-Mock-Service' => true
             ]
         ]);
 
@@ -129,14 +137,14 @@ class MockServerHttpService implements MockServerHttpServiceInterface
      */
     public function getPactJson(): string
     {
-        $uri = $this->config->getBaseUri()->withPath('/pact');
+        $uri      = $this->config->getBaseUri()->withPath('/pact');
         $response = $this->client->post($uri, [
             'headers' => [
-                "Content-Type" => "application/json",
-                "X-Pact-Mock-Service" => true
+                'Content-Type'        => 'application/json',
+                'X-Pact-Mock-Service' => true
             ]
         ]);
 
-        return json_encode(json_decode($response->getBody()->getContents()));
+        return \json_encode(\json_decode($response->getBody()->getContents()));
     }
 }

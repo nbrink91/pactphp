@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of Pact for PHP.
+ * (c) Mattersight Corporation
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Pact\Core\BinaryManager\Downloader;
 
 use Exception;
@@ -10,7 +17,6 @@ use ZipArchive;
 /**
  * Download the Ruby Standalone binaries for Windows.
  * Class BinaryDownloaderWindows
- * @package Pact\BinaryManager\Downloader
  */
 class BinaryDownloaderWindows implements BinaryDownloaderInterface
 {
@@ -19,7 +25,7 @@ class BinaryDownloaderWindows implements BinaryDownloaderInterface
      */
     public function checkEligibility(): bool
     {
-        return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+        return \strtoupper(\substr(PHP_OS, 0, 3)) === 'WIN';
     }
 
     /**
@@ -30,9 +36,9 @@ class BinaryDownloaderWindows implements BinaryDownloaderInterface
         $fs = new Filesystem();
 
         if ($fs->exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
-            $version = '1.22.1';
-            $fileName = "pact-{$version}-win32.zip";
-            $tempFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR  . $fileName;
+            $version      = '1.22.1';
+            $fileName     = "pact-{$version}-win32.zip";
+            $tempFilePath = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
 
             $this
                 ->download($fileName, $tempFilePath)
@@ -40,7 +46,7 @@ class BinaryDownloaderWindows implements BinaryDownloaderInterface
                 ->deleteCompressed($tempFilePath);
         }
 
-        $binDir = $destinationDir . DIRECTORY_SEPARATOR . 'pact' . DIRECTORY_SEPARATOR . 'bin';
+        $binDir  = $destinationDir . DIRECTORY_SEPARATOR . 'pact' . DIRECTORY_SEPARATOR . 'bin';
         $scripts = new BinaryScripts(
              $binDir . DIRECTORY_SEPARATOR . 'pact-mock-service.bat'
         );
@@ -50,20 +56,23 @@ class BinaryDownloaderWindows implements BinaryDownloaderInterface
 
     /**
      * Download the binaries.
-     * @param string $fileName Name of the file to be downloaded.
-     * @param string $tempFilePath Location to download the file.
-     * @return BinaryDownloaderWindows
+     *
+     * @param string $fileName     name of the file to be downloaded
+     * @param string $tempFilePath location to download the file
+     *
      * @throws Exception
+     *
+     * @return BinaryDownloaderWindows
      */
-    private function download(string $fileName, string $tempFilePath): BinaryDownloaderWindows
+    private function download(string $fileName, string $tempFilePath): self
     {
-        $uri = "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.22.1/{$fileName}";
-        $data = file_get_contents($uri);
+        $uri  = "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.22.1/{$fileName}";
+        $data = \file_get_contents($uri);
 
-        $result = file_put_contents($tempFilePath, $data);
+        $result = \file_put_contents($tempFilePath, $data);
 
         if ($result === false) {
-            throw new Exception("Failed to download file.");
+            throw new Exception('Failed to download file.');
         }
 
         return $this;
@@ -71,29 +80,33 @@ class BinaryDownloaderWindows implements BinaryDownloaderInterface
 
     /**
      * Uncompress the temp file and install the binaries in the destination directory.
+     *
      * @param string $sourceFile
      * @param string $destinationDir
+     *
      * @return BinaryDownloaderWindows
      * @return string
      */
-    private function extract(string $sourceFile, string $destinationDir): BinaryDownloaderWindows
+    private function extract(string $sourceFile, string $destinationDir): self
     {
         $zip = new ZipArchive();
 
         if ($zip->open($sourceFile)) {
             $zip->extractTo($destinationDir);
             $zip->close();
-        };
+        }
 
         return $this;
     }
 
     /**
      * Delete the temp file.
-     * @return BinaryDownloaderWindows
+     *
      * @param string $filePath
+     *
+     * @return BinaryDownloaderWindows
      */
-    private function deleteCompressed(string $filePath): BinaryDownloaderWindows
+    private function deleteCompressed(string $filePath): self
     {
         $fs = new Filesystem();
         $fs->remove($filePath);

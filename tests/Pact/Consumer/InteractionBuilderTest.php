@@ -1,11 +1,18 @@
 <?php
 
+/*
+ * This file is part of Pact for PHP.
+ * (c) Mattersight Corporation
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Pact\Consumer;
 
-use Pact\Core\Http\GuzzleClient;
 use Pact\Consumer\Service\MockServerHttpService;
 use Pact\Consumer\Service\MockServerHttpServiceInterface;
 use Pact\Core\BinaryManager\BinaryManager;
+use Pact\Core\Http\GuzzleClient;
 use Pact\Core\Model\ConsumerRequest;
 use Pact\Core\Model\ProviderResponse;
 use PHPUnit\Framework\TestCase;
@@ -18,21 +25,21 @@ class InteractionBuilderTest extends TestCase
     /** @var MockServer */
     private $mockServer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $config = new MockServerConfig('localhost', '7200', 'someConsumer', 'someProvider');
-        $binaryManager = new BinaryManager(sys_get_temp_dir());
+        $config           = new MockServerConfig('localhost', '7200', 'someConsumer', 'someProvider');
+        $binaryManager    = new BinaryManager(\sys_get_temp_dir());
         $this->mockServer = new MockServer($config, $binaryManager);
         $this->mockServer->start();
         $this->service = new MockServerHttpService(new GuzzleClient(), $config);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->mockServer->stop();
     }
 
-    public function testSimpleGet()
+    public function testSimpleGet(): void
     {
         $request = new ConsumerRequest();
         $request
@@ -44,21 +51,21 @@ class InteractionBuilderTest extends TestCase
         $response
             ->setStatus(200)
             ->setBody([
-                "message" => "Hello, world!"
+                'message' => 'Hello, world!'
             ])
             ->addHeader('Content-Type', 'application/json');
 
         $builder = new InteractionBuilder(new MockServerEnvConfig());
-        $result = $builder
-            ->given("A test request.")
-            ->uponReceiving("A test response.")
+        $result  = $builder
+            ->given('A test request.')
+            ->uponReceiving('A test response.')
             ->with($request)
             ->willRespondWith($response);
 
         $this->assertTrue($result);
     }
 
-    public function testPostWithBody()
+    public function testPostWithBody(): void
     {
         $request = new ConsumerRequest();
         $request
@@ -66,9 +73,9 @@ class InteractionBuilderTest extends TestCase
             ->setMethod('GET')
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
-                'someStuff' => 'someOtherStuff',
+                'someStuff'  => 'someOtherStuff',
                 'someNumber' => 12,
-                'anArray' => [
+                'anArray'    => [
                     12,
                     'words here',
                     493.5
@@ -80,13 +87,13 @@ class InteractionBuilderTest extends TestCase
             ->setStatus(200)
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
-                "message" => "Hello, world!"
+                'message' => 'Hello, world!'
             ]);
 
         $builder = new InteractionBuilder(new MockServerEnvConfig());
-        $result = $builder
-            ->given("A test request.")
-            ->uponReceiving("A test response.")
+        $result  = $builder
+            ->given('A test request.')
+            ->uponReceiving('A test response.')
             ->with($request)
             ->willRespondWith($response);
 
