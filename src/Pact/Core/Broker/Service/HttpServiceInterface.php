@@ -31,8 +31,6 @@ interface HttpServiceInterface
      *
      * @param string $version Consumer version
      * @param string $json    PACT File JSON
-     *
-     * @return bool
      */
-    public function publishJson(string $version, string $json): bool;
+    public function publishJson(string $version, string $json);
 }

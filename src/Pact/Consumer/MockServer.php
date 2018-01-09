@@ -15,8 +15,6 @@ use Pact\Consumer\Exception\HealthCheckFailedException;
 use Pact\Consumer\Service\MockServerHttpService;
 use Pact\Core\BinaryManager\BinaryManager;
 use Pact\Core\Http\GuzzleClient;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -35,15 +33,11 @@ class MockServer
     /** @var Filesystem */
     private $fileSystem;
 
-    /** @var OutputInterface */
-    private $console;
-
     public function __construct(MockServerConfig $config, BinaryManager $binaryManager)
     {
         $this->config        = $config;
         $this->binaryManager = $binaryManager;
         $this->fileSystem    = new Filesystem();
-        $this->console       = new ConsoleOutput();
     }
 
     /**
@@ -58,7 +52,6 @@ class MockServer
         $scripts = $this->binaryManager->install();
 
         $command = $this->buildCommand($scripts->getMockService());
-        $this->console->writeln("Starting the Mock Server with command: {$command}...");
 
         $this->process = new Process($command);
         $this->process->start();
@@ -153,16 +146,13 @@ class MockServer
         $maxTries = 10;
         do {
             $tries++;
-            $this->console->writeln("Attempting try {$tries} of {$maxTries} to connect to Mock Server...");
             \sleep(1);
 
             try {
                 $status = $service->healthCheck();
-                $this->console->writeln('Connection successful!');
 
                 return $status;
             } catch (ConnectException $e) {
-                $this->console->writeln('Connection failed.');
             }
         } while ($tries <= $maxTries);
 

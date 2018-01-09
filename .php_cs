@@ -36,6 +36,7 @@ return PhpCsFixer\Config::create()
             'dir_constant' => true,
             'elseif' => true,
             'encoding' => true,
+            'explicit_indirect_variable' => true,
             'full_opening_tag' => true,
             'function_declaration' => true,
             'header_comment' => ['header' => $header, 'separate' => 'both'],

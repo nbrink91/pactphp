@@ -9,8 +9,10 @@
 
 namespace Pact\Consumer;
 
+use GuzzleHttp\Psr7\Uri;
 use Pact\Consumer\Service\MockServerHttpService;
 use Pact\Core\BinaryManager\BinaryManager;
+use Pact\Core\Broker\Service\HttpService;
 use Pact\Core\Http\GuzzleClient;
 use PHPUnit\Framework\TestListener;
 use PHPUnit\Framework\TestListenerDefaultImplementation;
@@ -34,6 +36,9 @@ class PactTestListener implements TestListener
      */
     private $testSuiteNames;
 
+    /** @var MockServerConfigInterface */
+    private $mockServerConfig;
+
     /**
      * PactTestListener constructor.
      *
@@ -41,7 +46,8 @@ class PactTestListener implements TestListener
      */
     public function __construct(array $testSuiteNames)
     {
-        $this->testSuiteNames = $testSuiteNames;
+        $this->testSuiteNames   = $testSuiteNames;
+        $this->mockServerConfig = new MockServerEnvConfig();
     }
 
     /**
@@ -50,14 +56,7 @@ class PactTestListener implements TestListener
     public function startTestSuite(TestSuite $suite): void
     {
         if (\in_array($suite->getName(), $this->testSuiteNames)) {
-            $config = new MockServerConfig(
-                \getenv('PACT_MOCK_SERVER_HOST'),
-                \getenv('PACT_MOCK_SERVER_PORT'),
-                \getenv('PACT_CONSUMER_NAME'),
-                \getenv('PACT_PROVIDER_NAME')
-            );
-
-            $this->server = new MockServer($config, new BinaryManager());
+            $this->server = new MockServer($this->mockServerConfig, new BinaryManager());
             $this->server->start();
         }
     }
@@ -72,23 +71,14 @@ class PactTestListener implements TestListener
     public function endTestSuite(TestSuite $suite): void
     {
         if (\in_array($suite->getName(), $this->testSuiteNames)) {
-            $httpService = new MockServerHttpService(new GuzzleClient(), new MockServerEnvConfig());
-            $success     = $httpService->verifyInteractions();
+            $httpService = new MockServerHttpService(new GuzzleClient(), $this->mockServerConfig);
+            $httpService->verifyInteractions();
 
-            if ($success === false) {
-                throw new \Exception('It failed!');
-            }
-            $httpService->getPactJson();
+            $json = $httpService->getPactJson();
             $this->server->stop();
 
-            /**$connector = new PactBrokerConnector(new PactUriOptions(getenv('PACT_BROKER_URI')));
-            $success = $connector->publishJson($json, getenv('PACT_CONSUMER_VERSION'));
-
-            if ($success === false) {
-                throw new \Exception("Failed to upload Pact File to Broker.");
-            } else {
-                echo "Pact JSON file uploaded to PACT Broker successfully.";
-            }*/
+            $brokerHttpService = new HttpService(new GuzzleClient(), new Uri(\getenv('PACT_BROKER_URI')));
+            $brokerHttpService->publishJson($json, \getenv('PACT_CONSUMER_VERSION'));
         }
     }
 }

@@ -9,6 +9,8 @@
         }
     ],
     "require": {
+        "php": "^7.0",
+        "ext-curl": "*",
         "psr/log": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
         "jms/serializer": "^1.10",
@@ -33,7 +35,7 @@
     },
     "scripts": {
         "test": [
-            "php-cs-fixer fix --config .php_cs.dist",
+            "php-cs-fixer fix --config .php_cs",
             "phpunit"
         ]
     }

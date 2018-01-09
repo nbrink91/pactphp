@@ -9,7 +9,6 @@
 
 namespace Pact\Core\Broker\Service;
 
-use Exception;
 use Pact\Core\Http\ClientInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -33,28 +32,20 @@ class HttpService implements HttpServiceInterface
     /**
      * @inheritDoc
      */
-    public function publishJson(string $json, string $version): bool
+    public function publishJson(string $json, string $version)
     {
-        $array    = \json_decode($json);
-        $consumer = $array['consumer'];
-        $provider = $array['provider'];
+        $array    = \json_decode($json, true);
+        $consumer = $array['consumer']['name'];
+        $provider = $array['provider']['name'];
 
-        $uri = $this->baseUri
-            ->withPath('/pacts/provider')
-            ->withPath($provider)
-            ->withPath('consumer')
-            ->withPath($consumer)
-            ->withPath('version')
-            ->withPath($version);
+        /** @var UriInterface $uri */
+        $uri = $this->baseUri->withPath("pacts/provider/{$provider}/consumer/{$consumer}/version/{$version}");
 
-        $response = $this->httpClient->put($uri, [
+        $this->httpClient->put($uri, [
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ],
             'body' => $json
         ]);
-
-        if ($response->getStatusCode() !== 200) {
-            throw new Exception('Unable to push Pact JSON to Pact Broker.');
-        }
-
-        return true;
     }
 }
