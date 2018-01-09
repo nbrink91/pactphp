@@ -1,13 +1,13 @@
 <?php
 
-namespace Pact\Consumer\Model;
+namespace Pact\Core\BinaryManager\Model;
 
 /**
  * Represents locations of Ruby Standalone full path and scripts.
- * Class RubyStandaloneBinaryScripts
- * @package Pact\Consumer\Model
+ * Class BinaryScripts
+ * @package Pact\Core\BinaryManager\Model
  */
-class RubyStandaloneBinaryScripts
+class BinaryScripts
 {
     /**
      * Path to Pact Mock Service

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pact\Consumer\Http;
+namespace Pact\Core\Http;
 
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
@@ -9,7 +9,7 @@ use Psr\Http\Message\UriInterface;
 /**
  * Guzzle Client Interface Wrapper
  * Class GuzzleClient
- * @package Pact\Consumer\Http
+ * @package Pact\Core\Http
  */
 class GuzzleClient implements ClientInterface
 {

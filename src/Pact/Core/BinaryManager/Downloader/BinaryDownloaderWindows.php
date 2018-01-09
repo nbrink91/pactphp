@@ -1,18 +1,18 @@
 <?php
 
-namespace Pact\Consumer\Service;
+namespace Pact\Core\BinaryManager\Downloader;
 
 use Exception;
-use Pact\Consumer\Model\RubyStandaloneBinaryScripts;
+use Pact\Core\BinaryManager\Model\BinaryScripts;
 use Symfony\Component\Filesystem\Filesystem;
 use ZipArchive;
 
 /**
  * Download the Ruby Standalone binaries for Windows.
- * Class RubyStandaloneBinaryDownloaderWindows
- * @package Pact\Consumer\Service
+ * Class BinaryDownloaderWindows
+ * @package Pact\BinaryManager\Downloader
  */
-class RubyStandaloneBinaryDownloaderWindows implements RubyStandaloneBinaryDownloaderInterface
+class BinaryDownloaderWindows implements BinaryDownloaderInterface
 {
     /**
      * @inheritDoc
@@ -25,7 +25,7 @@ class RubyStandaloneBinaryDownloaderWindows implements RubyStandaloneBinaryDownl
     /**
      * @inheritDoc
      */
-    public function install(string $destinationDir): RubyStandaloneBinaryScripts
+    public function install(string $destinationDir): BinaryScripts
     {
         $fs = new Filesystem();
 
@@ -36,12 +36,12 @@ class RubyStandaloneBinaryDownloaderWindows implements RubyStandaloneBinaryDownl
 
             $this
                 ->download($fileName, $tempFilePath)
-                ->uncompress($tempFilePath, $destinationDir)
+                ->extract($tempFilePath, $destinationDir)
                 ->deleteCompressed($tempFilePath);
         }
 
         $binDir = $destinationDir . DIRECTORY_SEPARATOR . 'pact' . DIRECTORY_SEPARATOR . 'bin';
-        $scripts = new RubyStandaloneBinaryScripts(
+        $scripts = new BinaryScripts(
              $binDir . DIRECTORY_SEPARATOR . 'pact-mock-service.bat'
         );
 
@@ -52,10 +52,10 @@ class RubyStandaloneBinaryDownloaderWindows implements RubyStandaloneBinaryDownl
      * Download the binaries.
      * @param string $fileName Name of the file to be downloaded.
      * @param string $tempFilePath Location to download the file.
-     * @return RubyStandaloneBinaryDownloaderWindows
+     * @return BinaryDownloaderWindows
      * @throws Exception
      */
-    private function download(string $fileName, string $tempFilePath): RubyStandaloneBinaryDownloaderWindows
+    private function download(string $fileName, string $tempFilePath): BinaryDownloaderWindows
     {
         $uri = "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.22.1/{$fileName}";
         $data = file_get_contents($uri);
@@ -73,10 +73,10 @@ class RubyStandaloneBinaryDownloaderWindows implements RubyStandaloneBinaryDownl
      * Uncompress the temp file and install the binaries in the destination directory.
      * @param string $sourceFile
      * @param string $destinationDir
-     * @return RubyStandaloneBinaryDownloaderWindows
+     * @return BinaryDownloaderWindows
      * @return string
      */
-    private function uncompress(string $sourceFile, string $destinationDir): RubyStandaloneBinaryDownloaderWindows
+    private function extract(string $sourceFile, string $destinationDir): BinaryDownloaderWindows
     {
         $zip = new ZipArchive();
 
@@ -90,10 +90,10 @@ class RubyStandaloneBinaryDownloaderWindows implements RubyStandaloneBinaryDownl
 
     /**
      * Delete the temp file.
-     * @return RubyStandaloneBinaryDownloaderWindows
+     * @return BinaryDownloaderWindows
      * @param string $filePath
      */
-    private function deleteCompressed(string $filePath): RubyStandaloneBinaryDownloaderWindows
+    private function deleteCompressed(string $filePath): BinaryDownloaderWindows
     {
         $fs = new Filesystem();
         $fs->remove($filePath);

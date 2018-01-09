@@ -1,6 +1,6 @@
 <?php
 
-namespace Pact\Consumer\Http;
+namespace Pact\Core\Http;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
@@ -8,7 +8,7 @@ use Psr\Http\Message\UriInterface;
 /**
  * Http Client Interface
  * Interface ClientInterface
- * @package Pact\Consumer\Http
+ * @package Pact\Core\Http
  */
 interface ClientInterface
 {
@@ -43,5 +43,4 @@ interface ClientInterface
      * @return ResponseInterface
      */
     public function delete(UriInterface $uri, array $options = []): ResponseInterface;
-
 }

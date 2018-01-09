@@ -1,11 +1,11 @@
 <?php
 
-namespace Pact\Consumer\Model;
+namespace Pact\Core\Model;
 
 /**
  * Request/Response Pair to be posted to the Ruby Standalone Mock Server for PACT tests.
  * Class Interaction
- * @package Pact\Consumer\Model
+ * @package Pact\Core\Model
  */
 class Interaction
 {

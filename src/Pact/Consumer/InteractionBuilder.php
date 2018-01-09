@@ -2,11 +2,11 @@
 
 namespace Pact\Consumer;
 
-use Pact\Consumer\Http\GuzzleClient;
-use Pact\Consumer\Model\ConsumerRequest;
-use Pact\Consumer\Model\Interaction;
-use Pact\Consumer\Model\ProviderResponse;
+use Pact\Core\Http\GuzzleClient;
 use Pact\Consumer\Service\MockServerHttpService;
+use Pact\Core\Model\ConsumerRequest;
+use Pact\Core\Model\Interaction;
+use Pact\Core\Model\ProviderResponse;
 
 /**
  * Build an interaction and send it to the Ruby Standalone Mock Service
@@ -23,9 +23,9 @@ class InteractionBuilder implements InteractionBuilderInterface
 
     /**
      * InteractionBuilder constructor.
-     * @param MockServerConfig $config
+     * @param MockServerConfigInterface $config
      */
-    public function __construct(MockServerConfig $config)
+    public function __construct(MockServerConfigInterface $config)
     {
         $this->interaction = new Interaction();
         $this->config = $config;

@@ -2,8 +2,8 @@
 
 namespace Pact\Consumer;
 
-use Pact\Consumer\Model\ConsumerRequest;
-use Pact\Consumer\Model\ProviderResponse;
+use Pact\Core\Model\ConsumerRequest;
+use Pact\Core\Model\ProviderResponse;
 
 /**
  * Interface InteractionBuilderInterface

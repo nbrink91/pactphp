@@ -1,19 +1,22 @@
 <?php
 
-namespace Pact\Consumer\Service;
+namespace Pact\Core\BinaryManager;
 
 use Exception;
-use Pact\Consumer\Model\RubyStandaloneBinaryScripts;
+use Pact\Core\BinaryManager\Downloader\BinaryDownloaderInterface;
+use Pact\Core\BinaryManager\Downloader\BinaryDownloaderWindows;
+use Pact\Core\BinaryManager\Exception\NoDownloaderFoundException;
+use Pact\Core\BinaryManager\Model\BinaryScripts;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Manage Ruby Standalone binaries.
- * Class RubyStandaloneBinaryManager
- * @package Pact\Consumer\Service
+ * Class BinaryManager
+ * @package Pact\BinaryManager
  */
-class RubyStandaloneBinaryManager
+class BinaryManager
 {
-    /** @var RubyStandaloneBinaryDownloaderInterface[] */
+    /** @var BinaryDownloaderInterface[] */
     private $downloaders = [];
 
     /**
@@ -22,18 +25,18 @@ class RubyStandaloneBinaryManager
      */
     private $destinationDir;
 
-    public function __construct(string $destinationDir)
+    public function __construct()
     {
-        $this->destinationDir = $destinationDir;
-        $this->downloaders[] = new RubyStandaloneBinaryDownloaderWindows();
+        $this->destinationDir = sys_get_temp_dir();
+        $this->downloaders[] = new BinaryDownloaderWindows();
     }
 
     /**
      * Add a single downloader.
-     * @param RubyStandaloneBinaryDownloaderInterface $downloader
-     * @return RubyStandaloneBinaryManager
+     * @param BinaryDownloaderInterface $downloader
+     * @return BinaryManager
      */
-    public function addDownloader(RubyStandaloneBinaryDownloaderInterface $downloader): RubyStandaloneBinaryManager
+    public function addDownloader(BinaryDownloaderInterface $downloader): BinaryManager
     {
         $this->downloaders[] = $downloader;
         return $this;
@@ -42,9 +45,9 @@ class RubyStandaloneBinaryManager
     /**
      * Overwrite default downloaders.
      * @param array $downloaders
-     * @return RubyStandaloneBinaryManager
+     * @return BinaryManager
      */
-    public function setDownloaders(array $downloaders): RubyStandaloneBinaryManager
+    public function setDownloaders(array $downloaders): BinaryManager
     {
         $this->downloaders = $downloaders;
         return $this;
@@ -52,7 +55,7 @@ class RubyStandaloneBinaryManager
 
     /**
      * Install.
-     * @return RubyStandaloneBinaryScripts
+     * @return BinaryScripts
      */
     public function install()
     {
@@ -71,14 +74,14 @@ class RubyStandaloneBinaryManager
 
     /**
      * Get the first downloader that meets the systems eligibility.
-     * @return RubyStandaloneBinaryDownloaderInterface
+     * @return BinaryDownloaderInterface
      * @throws Exception
      */
-    private function getDownloader(): RubyStandaloneBinaryDownloaderInterface
+    private function getDownloader(): BinaryDownloaderInterface
     {
         /**
          * Reverse the order of the downloaders so that the ones added last are checked first.
-         * @var RubyStandaloneBinaryDownloaderInterface[] $downloaders
+         * @var BinaryDownloaderInterface[] $downloaders
          */
         $downloaders = array_reverse($this->downloaders);
         foreach ($downloaders as $downloader) {
@@ -87,6 +90,6 @@ class RubyStandaloneBinaryManager
             }
         }
 
-        throw new Exception('No eligible downloader found for Mock Server binaries.');
+        throw new NoDownloaderFoundException('No eligible downloader found for Mock Server binaries.');
     }
 }

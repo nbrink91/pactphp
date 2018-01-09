@@ -1,6 +1,6 @@
 <?php
 
-namespace Pact\Consumer\Model;
+namespace Pact\Core\Model;
 
 /**
  * Request initiated by the consumer.
@@ -22,7 +22,17 @@ class ConsumerRequest
     /**
      * @var string[]
      */
-    private $headers = [];
+    private $headers;
+
+    /**
+     * @var mixed
+     */
+    private $body;
+
+    /**
+     * @var string
+     */
+    private $query;
 
     /**
      * @return string
@@ -86,6 +96,57 @@ class ConsumerRequest
     public function addHeader(string $header, string $value): ConsumerRequest
     {
         $this->headers[$header] = $value;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    /**
+     * @param mixed $body
+     * @return ConsumerRequest
+     */
+    public function setBody($body)
+    {
+        $this->body = $body;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQuery(): string
+    {
+        return $this->query;
+    }
+
+    /**
+     * @param string $query
+     * @return ConsumerRequest
+     */
+    public function setQuery(string $query): ConsumerRequest
+    {
+        $this->query = $query;
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     * @param string $value
+     * @return ConsumerRequest
+     */
+    public function addQueryParameter(string $key, string $value): ConsumerRequest
+    {
+        if ($this->query === null) {
+            $this->query = "{$key}={$value}";
+        } else {
+            $this->query = "{$this->query}&{$key}={$value}";
+        }
         return $this;
     }
 }

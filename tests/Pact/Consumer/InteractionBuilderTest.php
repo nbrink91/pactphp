@@ -2,12 +2,12 @@
 
 namespace Pact\Consumer;
 
-use Pact\Consumer\Http\GuzzleClient;
-use Pact\Consumer\Model\ConsumerRequest;
-use Pact\Consumer\Model\ProviderResponse;
+use Pact\Core\Http\GuzzleClient;
 use Pact\Consumer\Service\MockServerHttpService;
 use Pact\Consumer\Service\MockServerHttpServiceInterface;
-use Pact\Consumer\Service\RubyStandaloneBinaryManager;
+use Pact\Core\BinaryManager\BinaryManager;
+use Pact\Core\Model\ConsumerRequest;
+use Pact\Core\Model\ProviderResponse;
 use PHPUnit\Framework\TestCase;
 
 class InteractionBuilderTest extends TestCase
@@ -20,8 +20,8 @@ class InteractionBuilderTest extends TestCase
 
     protected function setUp()
     {
-        $config = new MockServerConfig('localhost', '7200', 'someConsumer', 'someProvider', sys_get_temp_dir());
-        $binaryManager = new RubyStandaloneBinaryManager(sys_get_temp_dir());
+        $config = new MockServerConfig('localhost', '7200', 'someConsumer', 'someProvider');
+        $binaryManager = new BinaryManager(sys_get_temp_dir());
         $this->mockServer = new MockServer($config, $binaryManager);
         $this->mockServer->start();
         $this->service = new MockServerHttpService(new GuzzleClient(), $config);
@@ -32,7 +32,7 @@ class InteractionBuilderTest extends TestCase
         $this->mockServer->stop();
     }
 
-    public function testWillRespondWith()
+    public function testSimpleGet()
     {
         $request = new ConsumerRequest();
         $request
@@ -48,8 +48,42 @@ class InteractionBuilderTest extends TestCase
             ])
             ->addHeader('Content-Type', 'application/json');
 
-        $config = new MockServerConfig('localhost', 7200, 'someConsumer', 'someProvider', sys_get_temp_dir());
-        $builder = new InteractionBuilder($config);
+        $builder = new InteractionBuilder(new MockServerEnvConfig());
+        $result = $builder
+            ->given("A test request.")
+            ->uponReceiving("A test response.")
+            ->with($request)
+            ->willRespondWith($response);
+
+        $this->assertTrue($result);
+    }
+
+    public function testPostWithBody()
+    {
+        $request = new ConsumerRequest();
+        $request
+            ->setPath('/something')
+            ->setMethod('GET')
+            ->addHeader('Content-Type', 'application/json')
+            ->setBody([
+                'someStuff' => 'someOtherStuff',
+                'someNumber' => 12,
+                'anArray' => [
+                    12,
+                    'words here',
+                    493.5
+                ]
+            ]);
+
+        $response = new ProviderResponse();
+        $response
+            ->setStatus(200)
+            ->addHeader('Content-Type', 'application/json')
+            ->setBody([
+                "message" => "Hello, world!"
+            ]);
+
+        $builder = new InteractionBuilder(new MockServerEnvConfig());
         $result = $builder
             ->given("A test request.")
             ->uponReceiving("A test response.")

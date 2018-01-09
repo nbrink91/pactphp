@@ -5,9 +5,11 @@ namespace Pact\Consumer\Service;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
-use Pact\Consumer\Http\ClientInterface;
+use Pact\Consumer\MockServerConfigInterface;
+use Pact\Core\Exception\ConnectionException;
+use Pact\Core\Http\ClientInterface;
 use Pact\Consumer\MockServerConfig;
-use Pact\Consumer\Model\Interaction;
+use Pact\Core\Model\Interaction;
 
 /**
  * Http Service that interacts with the Ruby Standalone Mock Server
@@ -33,9 +35,9 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     /**
      * MockServerHttpService constructor.
      * @param ClientInterface $client
-     * @param MockServerConfig $config
+     * @param MockServerConfigInterface $config
      */
-    public function __construct(ClientInterface $client, MockServerConfig $config)
+    public function __construct(ClientInterface $client, MockServerConfigInterface $config)
     {
         $this->serializer = SerializerBuilder::create()
             ->setPropertyNamingStrategy(new IdenticalPropertyNamingStrategy())->build();
@@ -58,7 +60,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
         ]);
 
         if ($response->getStatusCode() !== 200) {
-            throw new \Exception('Failed to receive a successful response from the Mock Server.');
+            throw new ConnectionException('Failed to receive a successful response from the Mock Server.');
         }
 
         return true;
@@ -94,17 +96,13 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
         $body = $this->serializer->serialize($interaction, 'json');
 
-        $response = $this->client->post($uri, [
+        $this->client->post($uri, [
             'headers' => [
                 "Content-Type" => "application/json",
                 "X-Pact-Mock-Service" => true
             ],
             'body' => $body
         ]);
-
-        if ($response->getStatusCode() !== 200) {
-            return false;
-        }
 
         return true;
     }
@@ -116,16 +114,12 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     {
         $uri = $this->config->getBaseUri()->withPath('/interactions/verification');
 
-        $response = $this->client->get($uri, [
+        $this->client->get($uri, [
             'headers' => [
                 "Content-Type" => "application/json",
                 "X-Pact-Mock-Service" => true
             ]
         ]);
-
-        if ($response->getStatusCode() !== 200) {
-            return false;
-        }
 
         return true;
     }

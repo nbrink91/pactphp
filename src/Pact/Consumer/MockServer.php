@@ -4,21 +4,22 @@ namespace Pact\Consumer;
 
 use Exception;
 use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Psr7\Uri;
-use Pact\Consumer\Http\GuzzleClient;
+use Pact\Consumer\Exception\HealthCheckFailedException;
+use Pact\Core\Http\GuzzleClient;
 use Pact\Consumer\Service\MockServerHttpService;
-use Pact\Consumer\Service\RubyStandaloneBinaryManager;
+use Pact\Core\BinaryManager\BinaryManager;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
-use ZipArchive;
 
 class MockServer
 {
     /** @var MockServerConfig */
     private $config;
 
-    /** @var RubyStandaloneBinaryManager */
+    /** @var BinaryManager */
     private $binaryManager;
 
     /** @var Process */
@@ -27,11 +28,15 @@ class MockServer
     /** @var Filesystem */
     private $fileSystem;
 
-    public function __construct(MockServerConfig $config, RubyStandaloneBinaryManager $binaryManager)
+    /** @var OutputInterface */
+    private $console;
+
+    public function __construct(MockServerConfig $config, BinaryManager $binaryManager)
     {
         $this->config = $config;
         $this->binaryManager = $binaryManager;
         $this->fileSystem = new Filesystem();
+        $this->console = new ConsoleOutput();
     }
 
     /**
@@ -44,22 +49,10 @@ class MockServer
 
         $results['consumer'] = $this->config->getConsumer();
         $results['provider'] = $this->config->getProvider();
-
-        if ($this->config->getHost() !== null) {
-            $results['host'] = $this->config->getHost();
-        }
-
-        if ($this->config->getPort() !== null) {
-            $results['port'] = $this->config->getPort();
-        }
-
-        if ($this->config->getPactDir() !== null) {
-            $results['pact-dir'] = $this->config->getPactDir();
-        }
-
-        if ($this->config->getPactFileWriteMode() !== null) {
-            $results['pact-file-write-mode'] = $this->config->getPactFileWriteMode();
-        }
+        $results['pact-dir'] = $this->config->getPactDir();
+        $results['pact-file-write-mode'] = $this->config->getPactFileWriteMode();
+        $results['host'] = $this->config->getHost();
+        $results['port'] = $this->config->getPort();
 
         if ($this->config->getPactSpecificationVersion() !== null) {
             $results['pact-specification-version'] = $this->config->getPactSpecificationVersion();
@@ -81,8 +74,7 @@ class MockServer
     {
         $command = "{$binaryPath} service";
 
-        foreach ($this->buildParameters() as $name => $value)
-        {
+        foreach ($this->buildParameters() as $name => $value) {
             $command .= " --{$name}=\"{$value}\"";
         }
 
@@ -99,7 +91,7 @@ class MockServer
         $scripts = $this->binaryManager->install();
 
         $command = $this->buildCommand($scripts->getMockService());
-        echo "Starting the Mock Server with command: {$command}...\r\n";
+        $this->console->writeln("Starting the Mock Server with command: {$command}...");
 
         $this->process = new Process($command);
         $this->process->start();
@@ -142,20 +134,21 @@ class MockServer
 
         // Verify that the service is up.
         $tries = 0;
+        $maxTries = 10;
         do {
             $tries++;
-            echo "Attempting try {$tries} to connect to Mock Server.\n";
+            $this->console->writeln("Attempting try {$tries} of {$maxTries} to connect to Mock Server...");
             sleep(1);
 
             try {
                 $status = $service->healthCheck();
-                echo "Successfully connected.\n";
+                $this->console->writeln('Connection successful!');
                 return $status;
             } catch (ConnectException $e) {
-                echo "Failed to connect.\n";
+                $this->console->writeln('Connection failed.');
             }
-        } while ($tries <= 10);
+        } while ($tries <= $maxTries);
 
-        throw new Exception('Health Check failed for Mock Server.');
+        throw new HealthCheckFailedException("Failed to make connection to Mock Server in {$maxTries} attempts.");
     }
 }

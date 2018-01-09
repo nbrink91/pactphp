@@ -2,3 +2,5 @@ vendor
 composer.lock
 .idea
 *.iml
+*.cache
+test_results

@@ -10,7 +10,7 @@ use Psr\Http\Message\UriInterface;
  * Class MockServerConfig
  * @package Pact\Consumer
  */
-class MockServerConfig
+class MockServerConfig implements MockServerConfigInterface
 {
     /**
      * Host on which to bind the service
@@ -28,16 +28,6 @@ class MockServerConfig
      * @var bool
      */
     private $secure = false;
-
-    /**
-     * @var string|null
-     */
-    private $username;
-
-    /**
-     * @var string|null
-     */
-    private $password;
 
     /**
      * Consumer name
@@ -78,13 +68,12 @@ class MockServerConfig
      */
     private $log;
 
-    public function __construct(string $host, int $port, string $consumer, string $provider, string $pactDir)
+    public function __construct(string $host, int $port, string $consumer, string $provider)
     {
         $this->host = $host;
         $this->port = $port;
         $this->consumer = $consumer;
         $this->provider = $provider;
-        $this->pactDir = $pactDir;
     }
 
     /**
@@ -122,42 +111,6 @@ class MockServerConfig
     }
 
     /**
-     * @return null|string
-     */
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * @param null|string $username
-     * @return MockServerConfig
-     */
-    public function setUsername(string $username)
-    {
-        $this->username = $username;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    /**
-     * @param null|string $password
-     * @return MockServerConfig
-     */
-    public function setPassword(string $password)
-    {
-        $this->password = $password;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getConsumer(): string
@@ -178,7 +131,21 @@ class MockServerConfig
      */
     public function getPactDir(): ?string
     {
+        if ($this->pactDir === null) {
+            return sys_get_temp_dir();
+        }
+
         return $this->pactDir;
+    }
+
+    /**
+     * @param string $pactDir
+     * @return MockServerConfigInterface
+     */
+    public function setPactDir(string $pactDir): MockServerConfigInterface
+    {
+        $this->pactDir = $pactDir;
+        return $this;
     }
 
     /**
@@ -191,9 +158,9 @@ class MockServerConfig
 
     /**
      * @param string $pactFileWriteMode
-     * @return MockServerConfig
+     * @return MockServerConfigInterface
      */
-    public function setPactFileWriteMode(string $pactFileWriteMode): MockServerConfig
+    public function setPactFileWriteMode(string $pactFileWriteMode): MockServerConfigInterface
     {
         $options = ['overwrite', 'merge'];
 
@@ -216,9 +183,9 @@ class MockServerConfig
 
     /**
      * @param float $pactSpecificationVersion
-     * @return MockServerConfig
+     * @return MockServerConfigInterface
      */
-    public function setPactSpecificationVersion(float $pactSpecificationVersion): MockServerConfig
+    public function setPactSpecificationVersion(float $pactSpecificationVersion): MockServerConfigInterface
     {
         $this->pactSpecificationVersion = $pactSpecificationVersion;
         return $this;
@@ -234,9 +201,9 @@ class MockServerConfig
 
     /**
      * @param string $log
-     * @return MockServerConfig
+     * @return MockServerConfigInterface
      */
-    public function setLog(string $log): MockServerConfig
+    public function setLog(string $log): MockServerConfigInterface
     {
         $this->log = $log;
         return $this;

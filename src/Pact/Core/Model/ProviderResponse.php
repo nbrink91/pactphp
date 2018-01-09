@@ -1,11 +1,11 @@
 <?php
 
-namespace Pact\Consumer\Model;
+namespace Pact\Core\Model;
 
 /**
  * Response expectation that would be in response to a Consumer request from the Provider.
  * Class ProviderResponse
- * @package Pact\Consumer\Model
+ * @package Pact\Core\Model
  */
 class ProviderResponse
 {

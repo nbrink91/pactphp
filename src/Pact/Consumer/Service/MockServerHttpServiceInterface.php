@@ -2,7 +2,7 @@
 
 namespace Pact\Consumer\Service;
 
-use Pact\Consumer\Model\Interaction;
+use Pact\Core\Model\Interaction;
 
 /**
  * Interface MockServerHttpServiceInterface
