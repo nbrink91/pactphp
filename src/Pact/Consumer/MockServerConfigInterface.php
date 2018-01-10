@@ -46,7 +46,7 @@ interface MockServerConfigInterface
     /**
      * @return string
      */
-    public function getPactDir(): ?string;
+    public function getPactDir();
 
     /**
      * @param string $pactDir
@@ -70,7 +70,7 @@ interface MockServerConfigInterface
     /**
      * @return float
      */
-    public function getPactSpecificationVersion(): ?float;
+    public function getPactSpecificationVersion();
 
     /**
      * @param float $pactSpecificationVersion
@@ -82,7 +82,7 @@ interface MockServerConfigInterface
     /**
      * @return string
      */
-    public function getLog(): ?string;
+    public function getLog();
 
     /**
      * @param string $log

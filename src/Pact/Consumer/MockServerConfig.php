@@ -143,7 +143,7 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * @return string
      */
-    public function getPactDir(): ?string
+    public function getPactDir()
     {
         if ($this->pactDir === null) {
             return \sys_get_temp_dir();
@@ -195,7 +195,7 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * @return float
      */
-    public function getPactSpecificationVersion(): ?float
+    public function getPactSpecificationVersion()
     {
         return $this->pactSpecificationVersion;
     }
@@ -215,7 +215,7 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * @return string
      */
-    public function getLog(): ?string
+    public function getLog()
     {
         return $this->log;
     }
