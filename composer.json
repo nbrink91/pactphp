@@ -1,11 +1,11 @@
 {
-    "name": "nicholasbrink/pact",
+    "name": "mattersight/pact",
     "description": "PACT library for PHP.",
     "type": "library",
     "authors": [
         {
             "name": "Nicholas Brink",
-            "email": "nbrink7@gmail.com"
+            "email": "nick.brink@mattersight.com"
         }
     ],
     "require": {
