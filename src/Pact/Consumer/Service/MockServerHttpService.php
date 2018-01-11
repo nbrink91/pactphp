@@ -102,7 +102,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     {
         $uri = $this->config->getBaseUri()->withPath('/interactions');
 
-        $body = $this->serializer->serialize($interaction, 'json');
+        $body = \json_encode($interaction->jsonSerialize());
 
         $this->client->post($uri, [
             'headers' => [

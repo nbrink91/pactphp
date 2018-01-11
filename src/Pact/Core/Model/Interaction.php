@@ -13,7 +13,7 @@ namespace Pact\Core\Model;
  * Request/Response Pair to be posted to the Ruby Standalone Mock Server for PACT tests.
  * Class Interaction
  */
-class Interaction
+class Interaction implements \JsonSerializable
 {
     /**
      * @var string
@@ -113,5 +113,18 @@ class Interaction
         $this->response = $response;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'description'   => $this->getDescription(),
+            'providerState' => $this->getProviderState(),
+            'request'       => $this->getRequest(),
+            'response'      => $this->getResponse()
+        ];
     }
 }

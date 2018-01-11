@@ -57,6 +57,7 @@ class MockServerHttpServiceTest extends TestCase
             ->setPath('/example')
             ->setMethod('GET');
         $response = new ProviderResponse();
+        $response->setStatus(200);
 
         $interaction = new Interaction();
         $interaction
@@ -89,10 +90,15 @@ class MockServerHttpServiceTest extends TestCase
             ->setPath('/example')
             ->setMethod('GET');
 
+        $response = new ProviderResponse();
+        $response->setStatus(200);
+
         $interaction = new Interaction();
         $interaction
+            ->setDescription('Some description')
+            ->setProviderState('Some state')
             ->setRequest($request)
-            ->setResponse(new ProviderResponse());
+            ->setResponse($response);
         $this->service->registerInteraction($interaction);
 
         $this->expectException(ServerException::class);

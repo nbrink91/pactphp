@@ -9,11 +9,14 @@
 
 namespace Pact\Core\Model;
 
+use Pact\Core\Matcher\MatcherInterface;
+use Pact\Core\Matcher\MatchParser;
+
 /**
  * Request initiated by the consumer.
  * Class ConsumerRequest
  */
-class ConsumerRequest
+class ConsumerRequest implements \JsonSerializable
 {
     /**
      * @var string
@@ -41,6 +44,11 @@ class ConsumerRequest
     private $query;
 
     /**
+     * @var MatcherInterface[]
+     */
+    private $matchingRules;
+
+    /**
      * @return string
      */
     public function getMethod(): string
@@ -63,7 +71,7 @@ class ConsumerRequest
     /**
      * @return string
      */
-    public function getPath(): string
+    public function getPath()
     {
         return $this->path;
     }
@@ -83,7 +91,7 @@ class ConsumerRequest
     /**
      * @return string[]
      */
-    public function getHeaders(): array
+    public function getHeaders()
     {
         return $this->headers;
     }
@@ -128,15 +136,17 @@ class ConsumerRequest
      */
     public function setBody($body)
     {
-        $this->body = $body;
+        $parser              = new MatchParser();
+        $this->matchingRules = $parser->matchParser($body);
+        $this->body          = $body;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getQuery(): string
+    public function getQuery()
     {
         return $this->query;
     }
@@ -168,5 +178,42 @@ class ConsumerRequest
         }
 
         return $this;
+    }
+
+    public function getMatchingRules()
+    {
+        return $this->matchingRules;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize()
+    {
+        $results = [];
+
+        $results['method'] = $this->getMethod();
+
+        if ($this->getHeaders() !== null) {
+            $results['headers'] = $this->getHeaders();
+        }
+
+        if ($this->getPath() !== null) {
+            $results['path'] = $this->getPath();
+        }
+
+        if ($this->getBody() !== null) {
+            $results['body'] = $this->getBody();
+        }
+
+        if ($this->getQuery() !== null) {
+            $results['query'] = $this->getQuery();
+        }
+
+        if ($this->getMatchingRules()) {
+            $results['matchingRules'] = $this->getMatchingRules();
+        }
+
+        return $results;
     }
 }

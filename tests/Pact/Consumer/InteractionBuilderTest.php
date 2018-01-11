@@ -13,6 +13,7 @@ use Pact\Consumer\Service\MockServerHttpService;
 use Pact\Consumer\Service\MockServerHttpServiceInterface;
 use Pact\Core\BinaryManager\BinaryManager;
 use Pact\Core\Http\GuzzleClient;
+use Pact\Core\Matcher\LikeMatcher;
 use Pact\Core\Model\ConsumerRequest;
 use Pact\Core\Model\ProviderResponse;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +28,7 @@ class InteractionBuilderTest extends TestCase
 
     protected function setUp(): void
     {
-        $config           = new MockServerConfig('localhost', '7200', 'someConsumer', 'someProvider');
+        $config           = new MockServerEnvConfig();
         $binaryManager    = new BinaryManager(\sys_get_temp_dir());
         $this->mockServer = new MockServer($config, $binaryManager);
         $this->mockServer->start();
@@ -51,7 +52,8 @@ class InteractionBuilderTest extends TestCase
         $response
             ->setStatus(200)
             ->setBody([
-                'message' => 'Hello, world!'
+                'message' => 'Hello, world!',
+                'age'     => new LikeMatcher(73)
             ])
             ->addHeader('Content-Type', 'application/json');
 
@@ -70,7 +72,7 @@ class InteractionBuilderTest extends TestCase
         $request = new ConsumerRequest();
         $request
             ->setPath('/something')
-            ->setMethod('GET')
+            ->setMethod('POST')
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
                 'someStuff'  => 'someOtherStuff',

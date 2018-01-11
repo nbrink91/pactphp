@@ -9,11 +9,14 @@
 
 namespace Pact\Core\Model;
 
+use Pact\Core\Matcher\MatcherInterface;
+use Pact\Core\Matcher\MatchParser;
+
 /**
  * Response expectation that would be in response to a Consumer request from the Provider.
  * Class ProviderResponse
  */
-class ProviderResponse
+class ProviderResponse implements \JsonSerializable
 {
     /**
      * @var int
@@ -21,14 +24,19 @@ class ProviderResponse
     private $status;
 
     /**
-     * @var string[]
+     * @var null|string[]
      */
     private $headers;
 
     /**
-     * @var mixed
+     * @var null|array
      */
     private $body;
+
+    /**
+     * @var null|MatcherInterface[]
+     */
+    private $matchingRules;
 
     /**
      * @return int
@@ -51,9 +59,9 @@ class ProviderResponse
     }
 
     /**
-     * @return string[]
+     * @return null|string[]
      */
-    public function getHeaders(): array
+    public function getHeaders()
     {
         return $this->headers;
     }
@@ -92,14 +100,37 @@ class ProviderResponse
     }
 
     /**
-     * @param mixed $body
+     * @param iterable $body
      *
      * @return ProviderResponse
      */
     public function setBody($body): self
     {
-        $this->body = $body;
+        $parser              = new MatchParser();
+        $this->matchingRules = $parser->matchParser($body);
+        $this->body          = $body;
 
         return $this;
+    }
+
+    /**
+     * @return null|MatcherInterface[]
+     */
+    public function getMatchingRules()
+    {
+        return $this->matchingRules;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'status'        => $this->getStatus(),
+            'headers'       => $this->getHeaders(),
+            'body'          => $this->getBody(),
+            'matchingRules' => $this->getMatchingRules()
+        ];
     }
 }
