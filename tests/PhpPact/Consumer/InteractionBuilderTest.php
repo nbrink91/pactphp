@@ -22,7 +22,7 @@ class InteractionBuilderTest extends TestCase
     protected function setUp(): void
     {
         $config           = new MockServerEnvConfig();
-        $binaryManager    = new BinaryManager(\sys_get_temp_dir());
+        $binaryManager    = new BinaryManager();
         $this->mockServer = new MockServer($config, $binaryManager);
         $this->mockServer->start();
         $this->service = new MockServerHttpService(new GuzzleClient(), $config);

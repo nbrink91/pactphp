@@ -68,11 +68,7 @@ class MockServer
     public function stop(): bool
     {
         if ($this->process instanceof Process) {
-            $result = $this->process->stop();
-
-            if ($result !== 1) {
-                throw new ProcessFailedException($this->process);
-            }
+            $this->process->stop();
         }
 
         return true;
