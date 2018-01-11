@@ -9,8 +9,8 @@
 
 namespace Pact\Core\Model;
 
-use Pact\Core\Matcher\MatcherInterface;
-use Pact\Core\Matcher\MatchParser;
+use Pact\Consumer\Matcher\MatcherInterface;
+use Pact\Consumer\Matcher\MatchParser;
 
 /**
  * Response expectation that would be in response to a Consumer request from the Provider.
@@ -126,11 +126,22 @@ class ProviderResponse implements \JsonSerializable
      */
     public function jsonSerialize()
     {
-        return [
-            'status'        => $this->getStatus(),
-            'headers'       => $this->getHeaders(),
-            'body'          => $this->getBody(),
-            'matchingRules' => $this->getMatchingRules()
+        $results = [
+            'status' => $this->getStatus()
         ];
+
+        if ($this->getHeaders() !== null) {
+            $results['headers'] = $this->getHeaders();
+        }
+
+        if ($this->getMatchingRules() !== null) {
+            $results['matchingRules'] = $this->getMatchingRules();
+        }
+
+        if ($this->getBody() !== null) {
+            $results['body'] = $this->getBody();
+        }
+
+        return $results;
     }
 }

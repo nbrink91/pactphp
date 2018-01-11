@@ -71,11 +71,14 @@ class PactTestListener implements TestListener
     public function endTestSuite(TestSuite $suite): void
     {
         if (\in_array($suite->getName(), $this->testSuiteNames)) {
-            $httpService = new MockServerHttpService(new GuzzleClient(), $this->mockServerConfig);
-            $httpService->verifyInteractions();
+            try {
+                $httpService = new MockServerHttpService(new GuzzleClient(), $this->mockServerConfig);
+                $httpService->verifyInteractions();
 
-            $json = $httpService->getPactJson();
-            $this->server->stop();
+                $json = $httpService->getPactJson();
+            } finally {
+                $this->server->stop();
+            }
 
             $brokerHttpService = new HttpService(new GuzzleClient(), new Uri(\getenv('PACT_BROKER_URI')));
             $brokerHttpService->publishJson($json, \getenv('PACT_CONSUMER_VERSION'));

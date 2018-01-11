@@ -9,8 +9,8 @@
 
 namespace Pact\Core\Model;
 
-use Pact\Core\Matcher\MatcherInterface;
-use Pact\Core\Matcher\MatchParser;
+use Pact\Consumer\Matcher\MatcherInterface;
+use Pact\Consumer\Matcher\MatchParser;
 
 /**
  * Request initiated by the consumer.

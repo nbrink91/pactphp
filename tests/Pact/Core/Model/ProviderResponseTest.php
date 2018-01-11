@@ -9,8 +9,8 @@
 
 namespace Pact\Core\Model;
 
-use Pact\Core\Matcher\LikeMatcher;
-use Pact\Core\Matcher\RegexMatcher;
+use Pact\Consumer\Matcher\LikeMatcher;
+use Pact\Consumer\Matcher\RegexMatcher;
 use PHPUnit\Framework\TestCase;
 
 class ProviderResponseTest extends TestCase

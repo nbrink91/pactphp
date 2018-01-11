@@ -13,7 +13,7 @@ use Pact\Consumer\Service\MockServerHttpService;
 use Pact\Consumer\Service\MockServerHttpServiceInterface;
 use Pact\Core\BinaryManager\BinaryManager;
 use Pact\Core\Http\GuzzleClient;
-use Pact\Core\Matcher\LikeMatcher;
+use Pact\Consumer\Matcher\LikeMatcher;
 use Pact\Core\Model\ConsumerRequest;
 use Pact\Core\Model\ProviderResponse;
 use PHPUnit\Framework\TestCase;

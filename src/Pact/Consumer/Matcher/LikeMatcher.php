@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Pact\Core\Matcher;
+namespace Pact\Consumer\Matcher;
 
 class LikeMatcher implements MatcherInterface
 {
