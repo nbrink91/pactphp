@@ -37,7 +37,9 @@
             "phpunit"
         ]
     },
-    "platform": {
-        "php": "7.0"
+    "config": {
+        "platform": {
+            "php": "7.0"
+        }
     }
 }
