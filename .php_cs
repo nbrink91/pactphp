@@ -1,12 +1,5 @@
 <?php
 
-$header = <<<'EOF'
-This file is part of Pact for PHP.
-(c) Mattersight Corporation
-For the full copyright and license information, please view the LICENSE
-file that was distributed with this source code.
-EOF;
-
 return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
     ->setRules(
@@ -39,7 +32,6 @@ return PhpCsFixer\Config::create()
             'explicit_indirect_variable' => true,
             'full_opening_tag' => true,
             'function_declaration' => true,
-            'header_comment' => ['header' => $header, 'separate' => 'both'],
             'indentation_type' => true,
             'line_ending' => true,
             'linebreak_after_opening_tag' => true,
@@ -132,6 +124,7 @@ return PhpCsFixer\Config::create()
             'single_blank_line_at_eof' => true,
             'single_import_per_statement' => true,
             'single_line_after_imports' => true,
+            'single_blank_line_before_namespace' => true,
             'single_quote' => true,
             'standardize_not_equals' => true,
             'strict_comparison' => true,

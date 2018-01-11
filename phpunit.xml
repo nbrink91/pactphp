@@ -26,12 +26,12 @@
         beStrictAboutTestsThatDoNotTestAnything="true">
     <testsuites>
         <testsuite name="PactUnitTests">
-            <directory>./tests/Pact</directory>
+            <directory>./tests/PhpPact</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src/Pact</directory>
+            <directory suffix=".php">./src/PhpPact</directory>
         </whitelist>
     </filter>
     <logging>

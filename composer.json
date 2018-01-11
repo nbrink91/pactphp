@@ -24,12 +24,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Pact\\": "src/Pact"
+            "PhpPact\\": "src/PhpPact"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Pact\\": "tests/Pact"
+            "PhpPact\\": "tests/PhpPact"
         }
     },
     "scripts": {
