@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class MockServerTest extends TestCase
 {
-    public function testStartAndStop(): void
+    public function testStartAndStop()
     {
         try {
             $mockServer = new MockServer(new MockServerEnvConfig(), new BinaryManager());

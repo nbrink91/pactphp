@@ -19,7 +19,7 @@ class InteractionBuilderTest extends TestCase
     /** @var MockServer */
     private $mockServer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $config           = new MockServerEnvConfig();
         $binaryManager    = new BinaryManager();
@@ -28,12 +28,12 @@ class InteractionBuilderTest extends TestCase
         $this->service = new MockServerHttpService(new GuzzleClient(), $config);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->mockServer->stop();
     }
 
-    public function testSimpleGet(): void
+    public function testSimpleGet()
     {
         $request = new ConsumerRequest();
         $request
@@ -60,7 +60,7 @@ class InteractionBuilderTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testPostWithBody(): void
+    public function testPostWithBody()
     {
         $request = new ConsumerRequest();
         $request

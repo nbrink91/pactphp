@@ -79,7 +79,7 @@ class BinaryManager
     /**
      * Uninstall.
      */
-    public function uninstall(): void
+    public function uninstall()
     {
         $fs = new Filesystem();
         $fs->remove($this->destinationDir . DIRECTORY_SEPARATOR . 'pact');

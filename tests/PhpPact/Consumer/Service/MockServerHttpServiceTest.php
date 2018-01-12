@@ -24,7 +24,7 @@ class MockServerHttpServiceTest extends TestCase
     /** @var MockServerConfigInterface */
     private $config;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->config     = new MockServerEnvConfig();
         $this->mockServer = new MockServer($this->config, new BinaryManager());
@@ -32,18 +32,18 @@ class MockServerHttpServiceTest extends TestCase
         $this->service = new MockServerHttpService(new GuzzleClient(), $this->config);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->mockServer->stop();
     }
 
-    public function testHealthCheck(): void
+    public function testHealthCheck()
     {
         $result = $this->service->healthCheck();
         $this->assertTrue($result);
     }
 
-    public function testRegisterInteraction(): void
+    public function testRegisterInteraction()
     {
         $request = new ConsumerRequest();
         $request
@@ -64,19 +64,19 @@ class MockServerHttpServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testDeleteAllInteractions(): void
+    public function testDeleteAllInteractions()
     {
         $result = $this->service->deleteAllInteractions();
         $this->assertTrue($result);
     }
 
-    public function testVerifyInteractions(): void
+    public function testVerifyInteractions()
     {
         $result = $this->service->verifyInteractions();
         $this->assertTrue($result);
     }
 
-    public function testVerifyInteractionsFailure(): void
+    public function testVerifyInteractionsFailure()
     {
         $request = new ConsumerRequest();
         $request
@@ -99,13 +99,13 @@ class MockServerHttpServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testGetPactJson(): void
+    public function testGetPactJson()
     {
         $result = $this->service->getPactJson();
         $this->assertEquals('{"consumer":{"name":"someConsumer"},"provider":{"name":"someProvider"},"interactions":[],"metadata":{"pactSpecification":{"version":"2.0.0"}}}', $result);
     }
 
-    public function testFullGetInteraction(): void
+    public function testFullGetInteraction()
     {
         $request = new ConsumerRequest();
         $request

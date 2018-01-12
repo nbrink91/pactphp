@@ -78,6 +78,7 @@ class BinaryDownloaderMac implements BinaryDownloaderInterface
     {
         $p = new \PharData($sourceFile);
         $p->extractTo($destinationDir);
+
         return $this;
     }
 

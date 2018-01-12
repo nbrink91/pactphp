@@ -23,7 +23,7 @@ class MatchParser
      */
     public function matchParser(&$body, string $jsonPath = '$.body')
     {
-        if (is_array($body) || $body instanceof Traversable) {
+        if (\is_array($body) || $body instanceof Traversable) {
             foreach ($body as $key => &$item) {
                 if ($item instanceof MatcherInterface) {
                     $path = "{$jsonPath}.{$key}";

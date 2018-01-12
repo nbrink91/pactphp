@@ -78,6 +78,7 @@ class BinaryDownloaderLinux implements BinaryDownloaderInterface
     {
         $p = new \PharData($sourceFile);
         $p->extractTo($destinationDir);
+
         return $this;
     }
 
@@ -95,5 +96,4 @@ class BinaryDownloaderLinux implements BinaryDownloaderInterface
 
         return $this;
     }
-
 }

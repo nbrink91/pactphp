@@ -46,7 +46,7 @@ class PactTestListener implements TestListener
     /**
      * @param TestSuite $suite
      */
-    public function startTestSuite(TestSuite $suite): void
+    public function startTestSuite(TestSuite $suite)
     {
         if (\in_array($suite->getName(), $this->testSuiteNames)) {
             $this->server = new MockServer($this->mockServerConfig, new BinaryManager());
@@ -61,7 +61,7 @@ class PactTestListener implements TestListener
      *
      * @throws \Exception
      */
-    public function endTestSuite(TestSuite $suite): void
+    public function endTestSuite(TestSuite $suite)
     {
         if (\in_array($suite->getName(), $this->testSuiteNames)) {
             try {

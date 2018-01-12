@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestSuite;
 
 class PactTestListenerTest extends TestCase
 {
-    public function testStartAndEndTestSuite(): void
+    public function testStartAndEndTestSuite()
     {
         $name     = 'FakeTestSuite';
         $listener = new PactTestListener([$name]);
