@@ -51,7 +51,11 @@ class MockServerHttpService implements MockServerHttpServiceInterface
             ]
         ]);
 
-        if ($response->getStatusCode() !== 200) {
+
+        $body = $response->getBody()->getContents();
+        if ($response->getStatusCode() !== 200
+            || $body !== "Mock service running\n") {
+            var_dump($body);
             throw new ConnectionException('Failed to receive a successful response from the Mock Server.');
         }
 
