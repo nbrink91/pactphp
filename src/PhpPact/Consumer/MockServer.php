@@ -71,7 +71,8 @@ class MockServer
     public function stop(): bool
     {
         if ($this->process instanceof Process) {
-            $this->process->stop();
+            $exitCode = $this->process->stop();
+            echo 'Stopped proceed exited with code ' . $exitCode;
             echo $this->process->getOutput();
         }
 
