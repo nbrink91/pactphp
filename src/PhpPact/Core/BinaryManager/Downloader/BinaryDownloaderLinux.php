@@ -6,14 +6,14 @@ use Exception;
 use PhpPact\Core\BinaryManager\Model\BinaryScripts;
 use Symfony\Component\Filesystem\Filesystem;
 
-class BinaryDownloaderMac implements BinaryDownloaderInterface
+class BinaryDownloaderLinux implements BinaryDownloaderInterface
 {
     /**
      * @inheritDoc
      */
     public function checkEligibility(): bool
     {
-        return PHP_OS === 'Darwin';
+        return PHP_OS === 'Linux';
     }
 
     /**
@@ -25,7 +25,7 @@ class BinaryDownloaderMac implements BinaryDownloaderInterface
 
         if ($fs->exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
             $version      = '1.22.1';
-            $fileName     = "pact-{$version}-osx.tar.gz";
+            $fileName     = "pact-{$version}-linux-x86_64.tar.gz";
             $tempFilePath = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
 
             $this
@@ -49,7 +49,7 @@ class BinaryDownloaderMac implements BinaryDownloaderInterface
      *
      * @throws Exception
      *
-     * @return BinaryDownloaderMac
+     * @return BinaryDownloaderLinux
      */
     private function download(string $fileName, string $tempFilePath): self
     {
@@ -71,7 +71,7 @@ class BinaryDownloaderMac implements BinaryDownloaderInterface
      * @param string $sourceFile
      * @param string $destinationDir
      *
-     * @return BinaryDownloaderMac
+     * @return BinaryDownloaderLinux
      * @return string
      */
     private function extract(string $sourceFile, string $destinationDir): self
@@ -86,7 +86,7 @@ class BinaryDownloaderMac implements BinaryDownloaderInterface
      *
      * @param string $filePath
      *
-     * @return BinaryDownloaderMac
+     * @return BinaryDownloaderLinux
      */
     private function deleteCompressed(string $filePath): self
     {
@@ -95,4 +95,5 @@ class BinaryDownloaderMac implements BinaryDownloaderInterface
 
         return $this;
     }
+
 }
