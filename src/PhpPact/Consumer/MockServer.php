@@ -37,8 +37,10 @@ class MockServer
      * Start the Mock Server. Verify that it is running.
      *
      * @throws Exception
+     *
+     * @return int process ID of the started Mock Server
      */
-    public function start()
+    public function start(): int
     {
         $scripts = $this->binaryManager->install();
 
@@ -46,12 +48,17 @@ class MockServer
 
         $this->process = new Process($command);
         $this->process->start();
+        \sleep(1);
 
-        if ($this->process->isStarted() !== true) {
-            new ProcessFailedException($this->process);
+        if ($this->process->isStarted() !== true || $this->process->isRunning() !== true) {
+            throw new ProcessFailedException($this->process);
         }
 
+        $pid = $this->process->getPid();
+
         $this->verifyHealthCheck();
+
+        return $pid;
     }
 
     /**
@@ -132,13 +139,11 @@ class MockServer
         $maxTries = 10;
         do {
             $tries++;
-            \sleep(1);
-
             try {
                 $status = $service->healthCheck();
-
                 return $status;
             } catch (ConnectException $e) {
+                \sleep(1);
             }
         } while ($tries <= $maxTries);
 

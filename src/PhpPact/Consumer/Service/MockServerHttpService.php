@@ -2,6 +2,7 @@
 
 namespace PhpPact\Consumer\Service;
 
+use GuzzleHttp\Exception\ServerException;
 use PhpPact\Consumer\MockServerConfig;
 use PhpPact\Consumer\MockServerConfigInterface;
 use PhpPact\Core\Exception\ConnectionException;
@@ -44,6 +45,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     public function healthCheck(): bool
     {
         $uri      = $this->config->getBaseUri()->withPath('/');
+
         $response = $this->client->get($uri, [
             'headers' => [
                 'Content-Type'           => 'application/json',
@@ -51,8 +53,8 @@ class MockServerHttpService implements MockServerHttpServiceInterface
             ]
         ]);
 
-
         $body = $response->getBody()->getContents();
+
         if ($response->getStatusCode() !== 200
             || $body !== "Mock service running\n") {
             throw new ConnectionException('Failed to receive a successful response from the Mock Server.');
