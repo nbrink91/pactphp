@@ -55,6 +55,8 @@ class MockServer
 
         $this->verifyHealthCheck();
 
+        echo $this->process->getOutput();
+
         return $this->process->getPid();
     }
 
