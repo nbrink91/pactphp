@@ -46,13 +46,11 @@ class MockServer
 
         $command = $this->buildCommand($scripts->getMockService());
 
-        echo 'Executing command: ' . $command;
-
         $this->process = new Process($command);
         $this->process->start();
 
-        if ($this->process->isRunning() !== true) {
-            throw new ProcessFailedException($this->process);
+        if ($this->process->isStarted() !== true) {
+            new ProcessFailedException($this->process);
         }
 
         $this->verifyHealthCheck();
@@ -71,6 +69,7 @@ class MockServer
     {
         if ($this->process instanceof Process) {
             $this->process->stop();
+            echo $this->process->getOutput();
         }
 
         return true;
