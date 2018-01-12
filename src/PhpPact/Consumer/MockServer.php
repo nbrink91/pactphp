@@ -47,7 +47,16 @@ class MockServer
         $command = $this->buildCommand($scripts->getMockService());
 
         $this->process = new Process($command);
-        $this->process->start();
+        $this->process
+            ->setTimeout(600)
+            ->setIdleTimeout(60);
+        $this->process->start(function ($type, $buffer) {
+            if (Process::ERR === $type) {
+                echo 'ERR > '.$buffer;
+            } else {
+                echo 'OUT > '.$buffer;
+            }
+        });
         \sleep(1);
 
         if ($this->process->isStarted() !== true || $this->process->isRunning() !== true) {
@@ -71,9 +80,7 @@ class MockServer
     public function stop(): bool
     {
         if ($this->process instanceof Process) {
-            $exitCode = $this->process->stop();
-            echo 'Stopped proceed exited with code ' . $exitCode;
-            echo $this->process->getOutput();
+            $this->process->stop(1);
         }
 
         return true;
