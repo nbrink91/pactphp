@@ -4,6 +4,7 @@ namespace PhpPact\Core\BinaryManager;
 
 use Exception;
 use PhpPact\Core\BinaryManager\Downloader\BinaryDownloaderInterface;
+use PhpPact\Core\BinaryManager\Downloader\BinaryDownloaderLinux;
 use PhpPact\Core\BinaryManager\Downloader\BinaryDownloaderMac;
 use PhpPact\Core\BinaryManager\Downloader\BinaryDownloaderWindows;
 use PhpPact\Core\BinaryManager\Exception\NoDownloaderFoundException;
@@ -29,8 +30,10 @@ class BinaryManager
     public function __construct()
     {
         $this->destinationDir = \sys_get_temp_dir();
-        $this->addDownloader(new BinaryDownloaderWindows());
-        $this->addDownloader(new BinaryDownloaderMac());
+        $this
+            ->addDownloader(new BinaryDownloaderWindows())
+            ->addDownloader(new BinaryDownloaderMac())
+            ->addDownloader(new BinaryDownloaderLinux());
     }
 
     /**
