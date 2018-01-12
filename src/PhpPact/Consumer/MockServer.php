@@ -11,6 +11,7 @@ use PhpPact\Core\Http\GuzzleClient;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 
 class MockServer
 {
@@ -44,12 +45,14 @@ class MockServer
     {
         $scripts = $this->binaryManager->install();
 
-        $command = $this->buildCommand($scripts->getMockService());
-
-        $this->process = new Process($command);
-        $this->process
+        $builder = new ProcessBuilder();
+        $this->process = $builder
+            ->setPrefix($scripts->getMockService())
+            ->setArguments($this->buildParameters())
+            ->getProcess()
             ->setTimeout(600)
             ->setIdleTimeout(60);
+
         $this->process->start(function ($type, $buffer) {
             if (Process::ERR === $type) {
                 echo 'ERR > '.$buffer;
@@ -87,7 +90,7 @@ class MockServer
     }
 
     /**
-     * Build a key value array of parameter to value.
+     * Build an array of command arguments.
      *
      * @return array
      */
@@ -95,40 +98,23 @@ class MockServer
     {
         $results = [];
 
-        $results['consumer']             = $this->config->getConsumer();
-        $results['provider']             = $this->config->getProvider();
-        $results['pact-dir']             = $this->config->getPactDir();
-        $results['pact-file-write-mode'] = $this->config->getPactFileWriteMode();
-        $results['host']                 = $this->config->getHost();
-        $results['port']                 = $this->config->getPort();
+        $results[] = "service";
+        $results[] = "--consumer={$this->config->getConsumer()}";
+        $results[] = "--provider={$this->config->getProvider()}";
+        $results[] = "--pact-dir={$this->config->getPactDir()}";
+        $results[] = "--pact-file-write-mode={$this->config->getPactFileWriteMode()}";
+        $results[] = "--host={$this->config->getHost()}";
+        $results[] = "--port={$this->config->getPort()}";
 
         if ($this->config->getPactSpecificationVersion() !== null) {
-            $results['pact-specification-version'] = $this->config->getPactSpecificationVersion();
+            $results[] = "--pact-specification-version={$this->config->getPactSpecificationVersion()}";
         }
 
         if ($this->config->getLog() !== null) {
-            $results['log'] = $this->config->getLog();
+            $results[] = "--log={$this->config->getLog()}";
         }
 
         return $results;
-    }
-
-    /**
-     * Put everything together into a single command line script.
-     *
-     * @param string $binaryPath path to mock server service binary
-     *
-     * @return string
-     */
-    private function buildCommand(string $binaryPath): string
-    {
-        $command = "{$binaryPath} service";
-
-        foreach ($this->buildParameters() as $name => $value) {
-            $command .= " --{$name}=\"{$value}\"";
-        }
-
-        return $command;
     }
 
     /**
