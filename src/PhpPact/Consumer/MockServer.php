@@ -37,10 +37,8 @@ class MockServer
      * Start the Mock Server. Verify that it is running.
      *
      * @throws Exception
-     *
-     * @return int process ID of the started Mock Server
      */
-    public function start(): int
+    public function start()
     {
         $scripts = $this->binaryManager->install();
 
@@ -54,10 +52,6 @@ class MockServer
         }
 
         $this->verifyHealthCheck();
-
-        echo $this->process->getOutput();
-
-        return $this->process->getPid();
     }
 
     /**
