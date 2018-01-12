@@ -46,6 +46,8 @@ class MockServer
 
         $command = $this->buildCommand($scripts->getMockService());
 
+        echo 'Executing command: ' . $command;
+
         $this->process = new Process($command);
         $this->process->start();
 
