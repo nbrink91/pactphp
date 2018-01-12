@@ -2,6 +2,8 @@
 
 namespace PhpPact\Consumer\Matcher;
 
+use Traversable;
+
 /**
  * Generate matching rules from a request or response body.
  * Class MatchParser
@@ -21,7 +23,7 @@ class MatchParser
      */
     public function matchParser(&$body, string $jsonPath = '$.body')
     {
-        if (\is_iterable($body)) {
+        if ($body instanceof Traversable) {
             foreach ($body as $key => &$item) {
                 if ($item instanceof MatcherInterface) {
                     $path = "{$jsonPath}.{$key}";
@@ -32,7 +34,7 @@ class MatchParser
 
                     $this->addMatchingRule($path, $item);
                     $item = $item->getValue();
-                } elseif (\is_iterable($item)) {
+                } else {
                     $this->matchParser($item, $jsonPath);
                 }
             }
